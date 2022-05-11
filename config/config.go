@@ -1,10 +1,15 @@
 package config
 
+var (
+	Def = Config{LogsAddress: "./logs/"}
+)
+
 type Config struct {
 	Name        string      `mapstructure:"name"`
 	Port        int         `mapstructure:"port"`
 	Mysql       MysqlConfig `mapstructure:"mysql"`
 	Redis       RedisConfig `mapstructure:"redis"`
+	LogLevel    int         `mapstructure:""`
 	LogsAddress string      `mapstructure:"logsAddress"`
 }
 

@@ -1,8 +1,11 @@
 # model.yaml
 # 配置模版. {变量部分自填}
+# 本文件可能上云 放到云端作为配置文件被初始化时下载
 name: "tiktok-lite"
 port: 1429
 logs: "./logs/"
+
+# 0 debug 1 info 3 warning 3 error
 logLevel: "info" # error info debug
 
 mysql:
