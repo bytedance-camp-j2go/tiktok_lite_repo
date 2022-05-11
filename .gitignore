@@ -13,3 +13,6 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# 特定的个人 dev 环境 
+config.dev.yaml

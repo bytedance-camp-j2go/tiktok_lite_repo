@@ -1,0 +1,18 @@
+# model.yaml
+# 配置模版. {变量部分自填}
+name: "tiktok-lite"
+port: 1429
+logs: "./logs/"
+logLevel: "info" # error info debug
+
+mysql:
+  name: "{userName}"
+  host: "{mysqlHost}"
+  port: 3306
+  password: "{passwd}"
+  dbName: "{dataBaseName}"
+
+redis:
+  host: "{redisHost}"
+  port: 6379
+  password: "{passwd}"
