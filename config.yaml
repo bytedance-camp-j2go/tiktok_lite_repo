@@ -6,7 +6,7 @@ port: 1429
 logs: "./logs/"
 
 # 0 debug 1 info 3 warning 3 error
-logLevel: "info" # error info debug
+logLevel: 1 # error info debug
 
 mysql:
   name: "{userName}"

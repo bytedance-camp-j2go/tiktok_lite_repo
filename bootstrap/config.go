@@ -13,14 +13,17 @@ import (
 // Config >> 初始化配置
 // 处理逻辑:
 // 1. 读默认配置 `config.yaml` 配置, 如果配置不存在则在当前工作路径创建并输出提示
-// 	TODO 如果不存在配置文件, 则从云端配置下载 ( 因为编译运行产出 工作路径可能没有配置文件
+// 	TODO 如果不存在配置文件, 则从云端配置下载 ( 因为编译运行产出 工作路径可能没有配置文件 / 或者内存放一个默认的配置文件, 进行写入
 // 2. 对配置进行重载, 根据 GO_ENV 进行读取,
 // 	如果 GO_ENV 不为空, 则执行用 config.{GO_ENV}.yaml 覆盖配置文件, 分环境完成自定义配置读入
-func Config() {
-	configType := "yaml"
-	defaultPath := "./"
-	v := viper.New()
 
+var (
+	configType  = "yaml"
+	defaultPath = "./"
+)
+
+func Config() {
+	v := viper.New()
 	// 从default中读取默认的配置
 	v.SetConfigName("config")
 	v.AddConfigPath(defaultPath)
@@ -41,6 +44,11 @@ func Config() {
 		viper.SetDefault(k, v)
 	}
 
+	initConfig(v)
+}
+
+// 尝试读取环境相关联的配置参数
+func readEnvConfig(v *viper.Viper) {
 	env := os.Getenv("GO_ENV")
 	// 根据配置的env读取相应的配置信息
 	if env != "" {
@@ -48,7 +56,7 @@ func Config() {
 		viper.SetConfigName(configName)
 		viper.AddConfigPath(defaultPath)
 		viper.SetConfigType(configType)
-		err = viper.ReadInConfig()
+		err := viper.ReadInConfig()
 
 		// 如果 env 的配置文件不存在, 则创建并提示
 		if err != nil {
@@ -72,13 +80,6 @@ func Config() {
 			zap.String("GO_ENV", env),
 		)
 	}
-	fmt.Println("err >> ", err, "\nconfig >>", v)
-
-}
-
-// 尝试读取环境相关联的配置参数
-func readEnvConfig(v *viper.Viper) {
-
 }
 
 // 将获取到的参数通过序列化转为 config 对象存入全局变量中
@@ -90,5 +91,5 @@ func initConfig(v *viper.Viper) {
 	}
 	// 传递给全局变量
 	config.Conf = serverConfig
-	color.Blue("11111111", config.Conf.LogsAddress)
+	color.Blue("init success! \n%v", config.Conf)
 }
