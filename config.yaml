@@ -3,7 +3,7 @@
 # 本文件可能上云 放到云端作为配置文件被初始化时下载
 name: "tiktok-lite"
 port: 1429
-logs: "./logs/"
+logs: "./logs"
 
 # 0 debug 1 info 3 warning 3 error
 logLevel: 1 # error info debug

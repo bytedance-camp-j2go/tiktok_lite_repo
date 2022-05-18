@@ -13,16 +13,26 @@ import (
 func Logger() {
 	// 实例化zap 配置
 	cfg := zap.NewDevelopmentConfig()
-	zap.NewAtomicLevel()
-	// 文件日志输出目录在 global.Conf 中配置
+
+	level := zap.NewAtomicLevel()
+	initLogLevel(&level, config.Conf.LogLevel)
+
+	// 文件日志输出目录在 config.Conf 中配置
 	// 配置日志的输出地址
 	cfg.OutputPaths = []string{
-		fmt.Sprintf("%slog-%s.log", config.Conf.LogsAddress, util.GetNowFormatTodayTime()), //
+		fmt.Sprintf("%s/%s.log", config.Conf.LogsAddress, util.GetNowFormatTodayTime()), //
 		"stdout",
 	}
 
+	if _, err := util.PathExists(config.Conf.LogsAddress); err != nil {
+		panic(err)
+	}
+
 	// 创建logger实例
-	logger, _ := cfg.Build()
+	logger, err := cfg.Build()
+	if err != nil {
+		panic(err)
+	}
 
 	zap.ReplaceGlobals(logger) // 替换zap包中全局的logger实例，后续在其他包中只需使用zap.L()调用即可
 	config.Log = logger        // 注册到全局变量中
@@ -45,5 +55,4 @@ func initLogLevel(atomicLevel *zap.AtomicLevel, logLevel int) {
 	case config.LevelFatal:
 		atomicLevel.SetLevel(zapcore.FatalLevel)
 	}
-
 }

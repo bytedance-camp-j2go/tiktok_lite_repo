@@ -6,8 +6,12 @@ import (
 )
 
 var (
+	// Conf Config、全局配置对象
 	Conf Config
-	// Log 支持 format 输出, 而 zap.L() 只能 结构化输出数据, 但性能更高
-	Log  *zap.Logger
+
+	// Log == zap.L() 结构化输出数据, 但性能更高
+	Log *zap.Logger
+
+	// Logf 支持 format 的日志
 	Logf *zap.SugaredLogger
 )

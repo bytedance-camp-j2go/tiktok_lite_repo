@@ -20,6 +20,6 @@
 1. `config.{GO_ENV}.yaml`   最高优先级
 2. `config.def.yaml`        默认加载
 
-- 配置文件读取顺序 > `config.{GO_ENV}.yaml` >> `config.yaml` 
+- 配置文件生效优先顺序 > `config.{GO_ENV}.yaml` >> `config.yaml` 
 - 两者相同部分以 `config.yaml` 为准:
 

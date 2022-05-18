@@ -31,8 +31,8 @@ type Config struct {
 	Port        int         `mapstructure:"port"`
 	Mysql       MysqlConfig `mapstructure:"mysql"`
 	Redis       RedisConfig `mapstructure:"redis"`
-	LogLevel    int         `mapstructure:""`
-	LogsAddress string      `mapstructure:"logsAddress"`
+	LogLevel    int         `mapstructure:"logLevel"`
+	LogsAddress string      `mapstructure:"logs"`
 }
 
 // ToDeBug 配置信息
