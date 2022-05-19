@@ -19,7 +19,12 @@ Config() DriverConfig
 
 // Driver 存储驱动的接口定义
 type Driver interface {
+	// Name 返回 driver 的命名 == Account 的type, 全局唯一
 	Name() string
+	// Host 返回驱动器内自定义的 host url, 直接或得驱动器对象, 从而支持自行拼接 url
+	// 注意!! 实现 Host() 是可选, 如果没有实现就进行调用会报错的.
+	Host() (string, error)
+
 	// Save 保存时处理
 	Save(account *model.DriverAccount, old *model.DriverAccount) error
 
@@ -38,5 +43,5 @@ type Driver interface {
 	Delete(path string, account *model.DriverAccount) error
 
 	// Upload 上传
-	Upload(file *model.FileStream, account *model.DriverAccount) (string, error)
+	Upload(file model.FileStream, account *model.DriverAccount) (string, error)
 }
