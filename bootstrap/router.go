@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Router 定义路由, init 版本只使用了两个中间件, TODO JWT
-func Router(r *gin.Engine) {
+// InitRouter 定义路由, init 版本只使用了两个中间件, TODO JWT
+func InitRouter(r *gin.Engine) {
 	r.Use(middleware.GinLogger(), middleware.GinRecovery(true))
 	//分组，路由前缀为"/douyin"
 	dy := r.Group("/douyin")

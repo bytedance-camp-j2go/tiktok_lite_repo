@@ -1,6 +1,7 @@
-package config
+package global
 
 import (
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/config"
 	"go.uber.org/zap"
 	_ "go.uber.org/zap"
 	"gorm.io/gorm"
@@ -8,7 +9,7 @@ import (
 
 var (
 	// Conf Config、全局配置对象
-	Conf Config
+	Conf config.Config
 
 	// Log == zap.L() 结构化输出数据, 但性能更高
 	Log *zap.Logger
