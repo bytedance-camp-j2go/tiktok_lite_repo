@@ -14,10 +14,10 @@ mysql:
 #  port: 3306
 #  password: "{passwd}"
 #  dbName: "{dataBaseName}"
-  name: "zb"
-  host: "47.96.150.204"
+  name: "root"
+  host: "localhost"
   port: 3306
-  password: "ZBzb123!"
+  password: "drldrl521521"
   dbName: "douyin"
 
 redis:

@@ -22,7 +22,7 @@ var MySecret = []byte("a1b2c3d4")
 
 //创建token，在调用此方法时，需要传入user对象
 //注意：这块传的user对象中不能存放密码等敏感信息，传入之前需删掉相关信息
-func GenToken(user model.User) (string, error) {
+func GetToken(user model.User) (string, error) {
 	//设置jwt的payload
 	claim := CustomClaims{
 		user,
@@ -64,7 +64,7 @@ func RefreshToken(tokenStr string) (string, error) {
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		jwt.TimeFunc = time.Now
 		claims.StandardClaims.ExpiresAt = jwt.At(time.Now().Add(time.Minute * 10))
-		return GenToken(claims.User)
+		return GetToken(claims.User)
 	}
 	return "", errors.New("Cloudn't handle this token")
 }

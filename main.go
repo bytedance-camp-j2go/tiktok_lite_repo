@@ -19,13 +19,11 @@ func main() {
 	r := gin.New()
 	//初始化路由
 	bootstrap.Router(r)
-
 	err := r.Run(fmt.Sprintf(":%d", config.Conf.Port))
 	if err != nil {
 		config.Logf.Errorf("serve run error >> %s", err.Error())
 		return
 	}
-
 	fmt.Print("main >> ")
 	fmt.Println(os.Getwd())
 }

@@ -16,9 +16,9 @@ type UserResponse struct {
 
 //用户登录成功返回响应
 type UserLoginResponse struct {
-	Response Response
-	UserId   int    `json:"user_id"` //用户id
-	Token    string `json:"token"`   //鉴权token
+	Response
+	UserId int64  `json:"user_id"` //用户id
+	Token  string `json:"token"`   //鉴权token
 }
 
 //用户注册成功返回响应
