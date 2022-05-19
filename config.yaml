@@ -9,11 +9,16 @@ logs: "./logs"
 logLevel: 1 # error info debug
 
 mysql:
-  name: "{userName}"
-  host: "{mysqlHost}"
+#  name: "{userName}"
+#  host: "{mysqlHost}"
+#  port: 3306
+#  password: "{passwd}"
+#  dbName: "{dataBaseName}"
+  name: "zb"
+  host: "47.96.150.204"
   port: 3306
-  password: "{passwd}"
-  dbName: "{dataBaseName}"
+  password: "ZBzb123!"
+  dbName: "douyin"
 
 redis:
   host: "{redisHost}"

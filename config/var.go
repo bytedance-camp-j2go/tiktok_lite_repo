@@ -3,6 +3,7 @@ package config
 import (
 	"go.uber.org/zap"
 	_ "go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 var (
@@ -14,4 +15,7 @@ var (
 
 	// Logf 支持 format 的日志
 	Logf *zap.SugaredLogger
+
+	// 获取mysql连接
+	DB *gorm.DB
 )
