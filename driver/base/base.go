@@ -1,7 +1,7 @@
 package base
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 )
 
 // Base 统一提供 Driver 行为的定义
@@ -10,54 +10,21 @@ import (
 // 存储数据列表
 type Base struct{}
 
-// func (b Base) Config() DriverConfig {
-// 	return DriverConfig{}
-// }
-//
-// func (b Base) Items() []Item {
-// 	return nil
-// }
+var (
+	// read only
+	driverMap = map[string]Driver{}
+)
 
-func (b Base) Save(account *model.DriverAccount, old *model.DriverAccount) error {
-	return ErrNotImplement
+func RegisterDriver(driver Driver) {
+	global.Logf.Infof("register driver: 「%s」", driver.Name())
+	driverMap[driver.Name()] = driver
 }
 
-func (b Base) File(path string, account *model.DriverAccount) (*model.File, error) {
-	return nil, ErrNotImplement
+func GetDriver(key string) (d Driver, ok bool) {
+	d, ok = driverMap[key]
+	return
 }
 
-func (b Base) Files(path string, account *model.DriverAccount) ([]model.File, error) {
-	return nil, ErrNotImplement
+func GetDriverMap() map[string]Driver {
+	return driverMap
 }
-
-func (b Base) Link(args Args, account *model.DriverAccount) (*Link, error) {
-	return nil, ErrNotImplement
-}
-
-func (b Base) Path(path string, account *model.DriverAccount) (*model.File, []model.File, error) {
-	return nil, nil, ErrNotImplement
-}
-
-func (b Base) Preview(path string, account *model.DriverAccount) (interface{}, error) {
-	return nil, ErrNotImplement
-}
-
-func (b Base) Move(src string, dst string, account *model.DriverAccount) error {
-	return ErrNotImplement
-}
-
-func (b Base) Rename(src string, dst string, account *model.DriverAccount) error {
-	return ErrNotImplement
-}
-
-func (b Base) Copy(src string, dst string, account *model.DriverAccount) error {
-	return ErrNotImplement
-}
-
-func (b Base) Delete(path string, account *model.DriverAccount) error {
-	return ErrNotImplement
-}
-
-// func (b Base) Upload(file *model.FileStream, account *model.DriverAccount) error {
-// 	return ErrNotImplement
-// }

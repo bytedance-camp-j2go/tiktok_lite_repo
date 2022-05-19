@@ -2,6 +2,7 @@ package global
 
 import (
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/config"
+	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
 	_ "go.uber.org/zap"
 )
@@ -15,4 +16,9 @@ var (
 
 	// Logf 支持 format 的日志
 	Logf *zap.SugaredLogger
+
+	// RedisDB Redis 连接
+	RedisDB *redis.Client
+	// Mysql 连接
+
 )

@@ -19,3 +19,5 @@ redis:
   host: "{redisHost}"
   port: 6379
   password: "{passwd}"
+  # redis 库号
+  no : 7

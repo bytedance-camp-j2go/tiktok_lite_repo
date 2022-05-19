@@ -54,8 +54,9 @@ func (m MysqlConfig) String() string {
 
 type RedisConfig struct {
 	Host     string `mapstructure:"host"`
-	Password int    `mapstructure:"passwd"`
+	Password string `mapstructure:"passwd"`
 	Port     int    `mapstructure:"port"`
+	No       int    `mapstructure:"no"`
 }
 
 func (r RedisConfig) String() string {

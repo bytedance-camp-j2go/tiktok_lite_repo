@@ -42,6 +42,8 @@ func InitConfig() {
 
 	readEnvConfig()
 	init2Config()
+	// 初始化 redis 连接
+	InitRedis()
 }
 
 // 尝试读取环境相关联的配置参数
@@ -61,11 +63,11 @@ func readEnvConfig() {
 			profilePath := fmt.Sprintf("%s/%s/%s.%s", dir, defaultPath, envConfigName, configType)
 			_, err := util.CreatFile(profilePath)
 			if err != nil {
-				fmt.Println(
+				color.Red(
 					"creat env profile error, The default configuration will be used! >> ", err)
 				return
 			}
-			fmt.Printf(
+			color.Red(
 				"creat env profile : %s"+
 					"\n\t"+
 					"Recommend custom configuration parameters, "+
