@@ -3,13 +3,14 @@ package bootstrap
 import (
 	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/config"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/fatih/color"
 	"github.com/spf13/viper"
 	"os"
 )
 
-// Config >> 初始化配置
+// InitConfig >> 初始化配置
 // 处理逻辑:
 // 1. 读默认配置 `config.yaml` 配置, 如果配置不存在则在当前工作路径创建并输出提示
 // 2. 对配置进行重载, 根据 GO_ENV 进行读取,
@@ -21,7 +22,7 @@ var (
 	defaultPath = "./"
 )
 
-func Config() {
+func InitConfig() {
 	v := viper.New()
 	// 从default中读取默认的配置
 	v.SetConfigName(configName)
@@ -87,6 +88,6 @@ func init2Config() {
 	}
 
 	// 传递给全局变量 对象会被复制
-	config.Conf = serverConfig
-	color.Blue("init success! \n%v", config.Conf)
+	global.Conf = serverConfig
+	color.Blue("init success! \n%v", global.Conf)
 }

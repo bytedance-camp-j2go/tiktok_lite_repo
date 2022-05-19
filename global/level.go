@@ -1,4 +1,4 @@
-package config
+package global
 
 // 定义日志等级, 和 zap 日志等级一一对应
 // 啰嗦一句: fatal 和 panic 区别, fatal 会让程序直接终止 (见 fmt.Fatal 源码终端 os.Exit(1)

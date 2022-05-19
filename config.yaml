@@ -5,8 +5,8 @@ name: "tiktok-lite"
 port: 1429
 logs: "./logs"
 
-# 0 debug 1 info 3 warning 3 error
-logLevel: 1 # error info debug
+# 参考 global/level
+logLevel: 1
 
 mysql:
   name: "{userName}"
