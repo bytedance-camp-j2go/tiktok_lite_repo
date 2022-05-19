@@ -20,8 +20,6 @@ func (UserController) Register(context *gin.Context) {
 
 }
 
-//Permission to bytedance-camp-j2go/tiktok_lite_repo.git denied to isdongrl.
-
 //用户登录
 func (UserController) Login(context *gin.Context) {
 
