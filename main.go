@@ -26,6 +26,6 @@ func main() {
 		return
 	}
 
-	fmt.Print("main >> ")
+	fmt.Print("main > ")
 	fmt.Println(os.Getwd())
 }
