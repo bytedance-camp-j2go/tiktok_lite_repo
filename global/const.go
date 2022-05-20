@@ -5,15 +5,18 @@ package global
 // panic 更类似于 Java 之 Exception, 会逐级上抛, 通过 defer recover 接受 panic 并处理, 基本等同于 try-catch
 const (
 /*LevelDebug = iota
-LevelInfo
-LevelWaring
-LevelError
-LevelDPanic
-LevelPanic
-LevelFatal*/
+  LevelInfo
+  LevelWaring
+  LevelError
+  LevelDPanic
+  LevelPanic
+  LevelFatal*/
 )
 
 const (
 /*// DefExpiration
-DefExpiration = 0*/
+  DefExpiration = 0*/
 )
+
+// UserName 鉴权成功后，在context中存入user信息，其key为userName
+const UserName = "requestUser"

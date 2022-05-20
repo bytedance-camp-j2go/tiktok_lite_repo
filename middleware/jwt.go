@@ -1,12 +1,10 @@
-/**
-* @Author:drl
-* @Date: 2022/5/19 14:42
- */
 package middleware
 
 import (
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/utils"
 	"net/http"
 	"strings"
 )
@@ -17,9 +15,18 @@ func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//获取请求的url，对其进行判断是否需要鉴权
 		url := c.FullPath()
-		strings.Split(url, "/")
+		strs := strings.Split(url, "/")
+		path := []string{"feed", "login", "register"}
+		for _, s := range strs {
+			if utils.Contains(path, s) {
+				//能够进来的说明是不需要鉴权的接口，直接放行
+				c.Next()
+				return
+			}
+		}
 		// 获取请求头中 token，实际是一个完整被签名过的 token
-		tokenStr := c.GetHeader("Authorization")
+		//tokenStr := c.GetHeader("Authorization")
+		tokenStr := c.Query("token")
 		// fmt.Println(tokenStr)
 		if tokenStr == "" {
 			c.JSON(http.StatusForbidden, "无权访问，请求未带token")
@@ -36,7 +43,7 @@ func JWTAuth() gin.HandlerFunc {
 		}
 
 		// 将claim中的user信息存在context中
-		c.Set("userName", claim.User)
+		c.Set(global.UserName, claim.User)
 
 		// 这里执行路由 HandlerFunc
 		c.Next()

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/bootstrap"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/middleware"
 	"github.com/gin-gonic/gin"
 	"os"
 )
@@ -17,6 +18,7 @@ func main() {
 	bootstrap.InitDB()
 	//获取路由
 	r := gin.New()
+	r.Use(middleware.JWTAuth())
 	//初始化路由
 	bootstrap.InitRouter(r)
 	//初始化数据库

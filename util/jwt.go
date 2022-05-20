@@ -1,7 +1,3 @@
-/**
-* @Author:drl
-* @Date: 2022/5/19 14:52
- */
 package util
 
 import (
@@ -20,7 +16,7 @@ type CustomClaims struct {
 
 var MySecret = []byte("a1b2c3d4")
 
-//创建token，在调用此方法时，需要传入user对象
+// GetToken 创建token，在调用此方法时，需要传入user对象
 //注意：这块传的user对象中不能存放密码等敏感信息，传入之前需删掉相关信息
 func GetToken(user model.User) (string, error) {
 	//设置jwt的payload
@@ -34,7 +30,7 @@ func GetToken(user model.User) (string, error) {
 	return token.SignedString(MySecret)
 }
 
-//解析token，返回用户信息
+// ParseToken 解析token，返回用户信息
 func ParseToken(tokenStr string) (*CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return MySecret, nil
@@ -49,7 +45,7 @@ func ParseToken(tokenStr string) (*CustomClaims, error) {
 	return nil, errors.New("无效token")
 }
 
-//刷新token，若在创建token时设置了过期时间，则需要在用户每次登录时刷新token
+// RefreshToken 刷新token，若在创建token时设置了过期时间，则需要在用户每次登录时刷新token
 func RefreshToken(tokenStr string) (string, error) {
 	jwt.TimeFunc = func() time.Time {
 		return time.Unix(0, 0)
