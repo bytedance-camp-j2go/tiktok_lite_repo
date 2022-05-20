@@ -33,12 +33,7 @@ const (
 	Patch
 )
 
-type Json map[string]interface{}
-
-type TokenResp struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-}
+type Json map[string]any
 
 type Header struct {
 	Name  string `json:"name"`

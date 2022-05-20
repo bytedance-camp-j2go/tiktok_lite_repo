@@ -32,12 +32,17 @@ var (
 )
 
 func TestUpload(t *testing.T) {
+
+	// 序列化到 redis
 	putPolicy := storage.PutPolicy{
 		Scope:     driver.Bucket,
+		Expires:   expiresQBox,
 		MimeLimit: "!application/json;text/plain",
 	}
 
 	mac := qbox.NewMac(driver.AccessKey, driver.SecretKey)
+
+	// 根据上传策略申请 token
 	upToken := putPolicy.UploadToken(mac)
 
 	formUploader := storage.NewFormUploader(&cfg)
