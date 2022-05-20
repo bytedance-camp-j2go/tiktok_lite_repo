@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"fmt"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/handler"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -13,12 +13,6 @@ func InitRouter(r *gin.Engine) {
 
 	// TODO SOME IMPL
 
-	dy.POST("/favorite/action", func(c *gin.Context) {
-		userId, _ := c.GetPostForm("user_id")
-		token, _ := c.GetPostForm("token")
-		videoId, _ := c.GetPostForm("video_id")
-		actionType, _ := c.GetPostForm("action_type")
-		fmt.Println(userId, token, videoId, actionType)
-		c.JSON(200, "点赞成功")
-	})
+	dy.POST("/favorite/action/", handler.FavoriteAction)
+	dy.GET("/favorite/list/", handler.FavoriteList)
 }
