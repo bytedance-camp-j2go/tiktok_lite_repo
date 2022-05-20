@@ -6,7 +6,7 @@ package bootstrap
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/config"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -17,7 +17,7 @@ import (
 func InitDB() *gorm.DB {
 
 	//获取全局配置对象
-	serverConfig := config.Conf
+	serverConfig := global.Conf
 	//从serverConfig中获取mysql信息
 	mysqlInfo := serverConfig.Mysql
 	//获取dsn
@@ -38,6 +38,6 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	config.DB = db
+	global.DB = db
 	return db
 }

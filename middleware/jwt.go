@@ -8,12 +8,16 @@ import (
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
 // JWTAuth 鉴权中间件
 //注意：这个中间件不能直接初始化在main方法中，用户未登录可以刷视频，即可以获取到视频流，所以只需要在需要鉴权的路由中进行拦截
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		//获取请求的url，对其进行判断是否需要鉴权
+		url := c.FullPath()
+		strings.Split(url, "/")
 		// 获取请求头中 token，实际是一个完整被签名过的 token
 		tokenStr := c.GetHeader("Authorization")
 		// fmt.Println(tokenStr)

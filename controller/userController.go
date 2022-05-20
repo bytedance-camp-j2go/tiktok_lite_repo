@@ -5,6 +5,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
@@ -29,6 +30,9 @@ func (UserController) Register(context *gin.Context) {
 
 //用户登录
 func (UserController) Login(context *gin.Context) {
+
+	fmt.Println("login url--->", context.FullPath())
+
 	//获取账号密码
 	username := context.Query("username")
 	password := context.Query("password")
