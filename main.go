@@ -3,21 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/bootstrap"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/config"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/handler"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
-	"go.uber.org/zap"
 	"os"
 )
-
-func init() {
-	// 这里进行初始化工作...
-
-	bootstrap.Config()
-	bootstrap.Logger()
-	// 初始化完成以后，global.XXX 可以被使用
-}
 
 func initClient() (err error) {
 	redisDb := redis.NewClient(&redis.Options{
@@ -33,8 +24,10 @@ func initClient() (err error) {
 }
 
 func main() {
+	bootstrap.InitConfig()
+	bootstrap.InitLogger()
 	r := gin.New()
-	bootstrap.Router(r)
+	bootstrap.InitRouter(r)
 
 	err := initClient()
 	if err != nil {
@@ -59,9 +52,9 @@ func main() {
 		c.JSON(200, "点赞成功")
 	})
 
-	err = r.Run(fmt.Sprintf(":%d", config.Conf.Port))
+	err = r.Run(fmt.Sprintf(":%d", global.Conf.Port))
 	if err != nil {
-		zap.L().Error("serve run error", zap.String("error", err.Error()))
+		global.Logf.Errorf("serve run error >> %s", err.Error())
 		return
 	}
 
