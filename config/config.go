@@ -31,8 +31,8 @@ type Config struct {
 	Port        int         `mapstructure:"port"`
 	Mysql       MysqlConfig `mapstructure:"mysql"`
 	Redis       RedisConfig `mapstructure:"redis"`
-	LogLevel    int         `mapstructure:""`
-	LogsAddress string      `mapstructure:"logsAddress"`
+	LogLevel    int         `mapstructure:"logLevel"`
+	LogsAddress string      `mapstructure:"logs"`
 }
 
 // ToDeBug 配置信息
@@ -54,8 +54,9 @@ func (m MysqlConfig) String() string {
 
 type RedisConfig struct {
 	Host     string `mapstructure:"host"`
-	Password int    `mapstructure:"passwd"`
+	Password string `mapstructure:"passwd"`
 	Port     int    `mapstructure:"port"`
+	No       int    `mapstructure:"no"`
 }
 
 func (r RedisConfig) String() string {
