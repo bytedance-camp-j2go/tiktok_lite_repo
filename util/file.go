@@ -57,7 +57,7 @@ func CreatNestedFile(path string) (*os.File, error) {
 	if !Exists(basePath) {
 		err := os.MkdirAll(basePath, 0700)
 		if err != nil {
-			global.Logf.Errorf("can't create foler，%s", err)
+			global.Logf.Errorf("can't create foler，%s\n", err)
 			return nil, err
 		}
 	}
@@ -68,12 +68,12 @@ func CreatNestedFile(path string) (*os.File, error) {
 func WriteToJson(src string, conf interface{}) bool {
 	data, err := json.MarshalIndent(conf, "", "  ")
 	if err != nil {
-		global.Logf.Errorf("failed convert Conf to []byte:%s", err.Error())
+		global.Logf.Errorf("failed convert Conf to []byte:%s\n", err.Error())
 		return false
 	}
 	err = ioutil.WriteFile(src, data, 0777)
 	if err != nil {
-		global.Logf.Errorf("failed to write json file:%s", err.Error())
+		global.Logf.Errorf("failed to write json file:%s\n", err.Error())
 		return false
 	}
 	return true

@@ -22,7 +22,6 @@ var (
 	RedisDB *redis.Client
 	// Mysql 连接
 
-
-	// 获取mysql连接
+	// DB 获取mysql连接
 	DB *gorm.DB
 )

@@ -10,6 +10,7 @@ func init() {
 	zap.L().Debug("all driver init")
 }
 
+// InitALlDrivers future-feature 通过这个方法初始化 config
 func InitALlDrivers() {
 
 }
