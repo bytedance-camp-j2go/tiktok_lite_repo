@@ -16,8 +16,8 @@ mysql:
   dbName: "{dataBaseName}"
 
 redis:
-  host: "{redisHost}"
+  host: "127.0.0.1"
   port: 6379
-  password: "{passwd}"
+  password: ""
   # redis 库号
   no : 7
