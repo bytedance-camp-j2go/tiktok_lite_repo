@@ -9,11 +9,16 @@ logs: "./logs"
 logLevel: 1
 
 mysql:
-  name: "{userName}"
-  host: "{mysqlHost}"
+#  name: "{userName}"
+#  host: "{mysqlHost}"
+#  port: 3306
+#  password: "{passwd}"
+#  dbName: "{dataBaseName}"
+  name: "root"
+  host: "localhost"
   port: 3306
-  password: "{passwd}"
-  dbName: "{dataBaseName}"
+  password: "drldrl521521"
+  dbName: "douyin"
 
 redis:
   host: "{redisHost}"

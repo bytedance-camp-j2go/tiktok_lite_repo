@@ -9,23 +9,23 @@ import (
 )
 
 func main() {
+	//加载配置
 	bootstrap.InitConfig()
+	//加载日志
 	bootstrap.InitLogger()
+	//mysql初始化，初始化连接对象
+	bootstrap.InitDB()
+	//获取路由
 	r := gin.New()
+	//初始化路由
 	bootstrap.InitRouter(r)
-
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-
+	//初始化数据库
+	bootstrap.InitDB()
 	err := r.Run(fmt.Sprintf(":%d", global.Conf.Port))
 	if err != nil {
 		global.Logf.Errorf("serve run error >> %s", err.Error())
 		return
 	}
-
 	fmt.Print("main >> ")
 	fmt.Println(os.Getwd())
 }
