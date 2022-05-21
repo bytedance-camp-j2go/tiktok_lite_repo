@@ -42,8 +42,6 @@ func InitConfig() {
 
 	readEnvConfig()
 	init2Config()
-	// 初始化 redis 连接
-	//InitRedis()
 }
 
 // 尝试读取环境相关联的配置参数

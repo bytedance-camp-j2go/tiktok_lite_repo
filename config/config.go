@@ -22,7 +22,6 @@ const (
 )
 
 func GetDefConf() Config {
-
 	return def
 }
 

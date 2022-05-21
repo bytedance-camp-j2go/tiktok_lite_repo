@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// 测试上传数据, 供使用者参考
+// web 表单测试上传示例代码, 供使用者参考
 /*
 	参考 https://github.dev/Xhofe/alist
 	form, err := ctx.MultipartForm()
@@ -50,12 +50,7 @@ import (
 */
 
 func TestUpload(t *testing.T) {
-	bootstrap.InitConfig()
-	bootstrap.InitLogger()
-	bootstrap.InitDB()
-	bootstrap.InitModel()
-	bootstrap.InitRedis()
-	bootstrap.InitDriver()
+	bootstrap.InitAll()
 
 	reader := strings.NewReader(`{"msg":"hello!"}`)
 	user := model.User{
