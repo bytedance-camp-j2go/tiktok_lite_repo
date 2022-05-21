@@ -15,6 +15,8 @@ func main() {
 	bootstrap.InitLogger()
 	// mysql初始化，初始化连接对象
 	bootstrap.InitDB()
+	// 自动迁移数据库表
+	bootstrap.InitModel()
 	// 获取路由
 	r := gin.New()
 	// 初始化路由

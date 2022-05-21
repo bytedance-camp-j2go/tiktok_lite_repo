@@ -9,10 +9,10 @@ import (
 )
 
 func init() {
-	err := global.DB.AutoMigrate(&DriverAccount{})
-	if err != nil {
-		global.Logf.Errorf("driver account init error! | %v\n", err)
-	}
+	// err := global.DB.AutoMigrate(&DriverAccount{})
+	// if err != nil {
+	// 	global.Logf.Errorf("driver account init error! | %v\n", err)
+	// }
 }
 
 // DriverAccount 通过接口向数据库存入驱动器配置
