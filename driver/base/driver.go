@@ -21,9 +21,11 @@ Config() DriverConfig
 type Driver interface {
 	// Name 返回 driver 的命名 == Account 的type, 全局唯一
 	Name() string
+
 	// Host 返回驱动器内自定义的 host url, 直接或得驱动器对象, 从而支持自行拼接 url
 	// 注意!! 实现 Host() 是可选, 如果没有实现就进行调用会报错的.
-	Host() (string, error)
+	// Host() (string, error)
+	// 经过考虑之后觉得不需要 driver 返回 host, 因为一个 driver 对象需要涉及多个账户
 
 	// Save 保存时处理
 	Save(account *model.DriverAccount, old *model.DriverAccount) error

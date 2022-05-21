@@ -8,7 +8,7 @@ import (
 // 然后移交此对象给 driver 对象处理具体的存储
 type FileStream struct {
 	File io.ReadCloser
-	Size uint64
+	Size int64
 	// 父级 url, 相当于指定传入的保存文件夹, 比如 /uuid/2006/01/
 	ParentPath string
 	// 文件名称，要求和上传的一样，最好有 .xxx 后缀
@@ -25,7 +25,7 @@ func (file FileStream) GetMIMEType() string {
 	return file.MIMEType
 }
 
-func (file FileStream) GetSize() uint64 {
+func (file FileStream) GetSize() int64 {
 	return file.Size
 }
 
