@@ -3,16 +3,15 @@ package main_test
 import (
 	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/bootstrap"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
 	"os"
 	"testing"
 )
 
 // 多版本测试
 func TestMultiVersionViper(t *testing.T) {
-	bootstrap.Config()
+	bootstrap.InitConfig()
 	fmt.Println("--------------")
-	dao.Init()
+	bootstrap.InitDB()
 }
 
 // 测试环境变量 `GO_ENV` 的获取
