@@ -15,11 +15,11 @@ func getNowTime() int64 {
 
 func Save2Redis(key string, v []byte, expires time.Duration) {
 	result, err := global.RedisDB.Set(global.RedisDB.Context(), key, v, expires).Result()
-	if err != redis.Nil {
+	if err != nil {
 		zap.L().Error("写入 redis 失败", zap.Error(err))
 		return
 	}
-	zap.L().Debug("写入 redis cache", zap.String("res", result))
+	zap.L().Debug("save2redis", zap.String("say", result))
 
 }
 

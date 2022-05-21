@@ -6,7 +6,7 @@ import (
 )
 
 func InitModel() {
-	err := global.DB.AutoMigrate(&model.DriverAccount{})
+	err := global.DB.AutoMigrate(&model.DriverAccount{}, &model.User{})
 
 	if err != nil {
 		global.Logf.Errorf("driver account init error! | %v\n", err)

@@ -7,7 +7,7 @@ import (
 
 func InitRedis() {
 	global.RedisDB = redis.NewClient(&redis.Options{
-		Addr:     global.Conf.Redis.String(),
+		Addr:     global.Conf.Redis.SVN(),
 		Password: global.Conf.Redis.Password,
 		DB:       global.Conf.Redis.No,
 	})

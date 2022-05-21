@@ -6,9 +6,10 @@ import (
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/driver/base"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/qiniu/go-sdk/v7/storage"
+	"go.uber.org/zap"
 )
 
-func init() {
+func Init() {
 	// 注册七牛存储器到 base.driverMap
 	base.RegisterDriver(&QNDriver{})
 }
@@ -19,7 +20,7 @@ type QNDriver struct {
 }
 
 func (d QNDriver) Name() string {
-	return "QiNiu"
+	return "qiniu"
 }
 
 var defCtx = context.Background()
@@ -29,7 +30,7 @@ func (d QNDriver) Upload(file model.FileStream, account *model.DriverAccount) (s
 	cfg := getCfg(account)
 	// 保存到存储上的路径也是访问路径
 	key := fmt.Sprintf("%s/%s", file.ParentPath, file.Name)
-	token := signToken(account)
+	token := getUploadToken(account)
 
 	// 上传对象
 	uploader := storage.NewFormUploader(&cfg)
@@ -39,6 +40,15 @@ func (d QNDriver) Upload(file model.FileStream, account *model.DriverAccount) (s
 	if err != nil {
 		return "", err
 	}
+
+	zap.L().Info("upload success!",
+		zap.String("file-key", res.Key),
+		zap.String("file-hash", res.Hash),
+		zap.String("ps-id", res.PersistentID),
+
+		zap.String("driver-name", d.Name()),
+		zap.String("account", account.Name),
+	)
 
 	return fmt.Sprintf("%s/%s", account.GetHost(), key), nil
 }

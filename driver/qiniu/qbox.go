@@ -19,13 +19,13 @@ const (
 
 // 通过 SDK 签 TOKEN 存入 REDIS 使用事先 GET 没有则重新获取并存入
 func getUploadToken(account *model.DriverAccount) string {
-	tokenKey := fmt.Sprintf(qnTokenCacheKey, account.Name)
+	redisTokenKey := fmt.Sprintf(qnTokenCacheKey, account.Name)
 	// 从缓存获得 Token
-	exist, err := util.ExistKey(tokenKey)
+	exist, err := util.ExistKey(redisTokenKey)
 	if err != nil || !exist {
 		return signToken(account)
 	}
-	token, err := util.GetStringFromRedis(tokenKey)
+	token, err := util.GetStringFromRedis(redisTokenKey)
 	// 应该是极小概率事件
 	if err != nil {
 		global.Logf.Errorf("get token error >> %q\n", err)
@@ -59,21 +59,22 @@ func getCfg(account *model.DriverAccount) storage.Config {
 }
 
 // 签 token
-func signToken(driver *model.DriverAccount) string {
+func signToken(account *model.DriverAccount) string {
 	// 序列化到 redis? 可能不需要
 	putPolicy := storage.PutPolicy{
-		Scope:   driver.Bucket,
-		Expires: expiresQBox,
+		Scope:   account.Bucket,
+		Expires: uint64(expiresQBox.Seconds()),
 		// MimeLimit 设置上传数据格式, 如果没有设置可能会根据文件名自动判断
 		// MimeLimit: "!application/json;text/plain",
 	}
-	mac := qbox.NewMac(driver.AccessKey, driver.SecretKey)
+	mac := qbox.NewMac(account.AccessKey, account.SecretKey)
 
 	// 根据上传策略申请 token
 	upToken := putPolicy.UploadToken(mac)
 
 	go func() {
-		util.Save2Redis("", []byte(upToken), expiresRedis)
+		util.Save2Redis(
+			fmt.Sprintf(qnTokenCacheKey, account.Name), []byte(upToken), expiresRedis)
 	}()
 	return upToken
 }

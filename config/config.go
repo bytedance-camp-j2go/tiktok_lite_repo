@@ -54,11 +54,15 @@ func (m MysqlConfig) String() string {
 
 type RedisConfig struct {
 	Host     string `mapstructure:"host"`
-	Password string `mapstructure:"passwd"`
+	Password string `mapstructure:"password"`
 	Port     int    `mapstructure:"port"`
-	No       int    `mapstructure:"no"`
+	No       int    `mapstructure:"dbNo"`
 }
 
 func (r RedisConfig) String() string {
+	return fmt.Sprintf("%s/%d", fmt.Sprintf(redisFormat, r.Host, r.Port), r.No)
+}
+
+func (r RedisConfig) SVN() string {
 	return fmt.Sprintf(redisFormat, r.Host, r.Port)
 }

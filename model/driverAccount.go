@@ -18,10 +18,9 @@ func init() {
 // DriverAccount 通过接口向数据库存入驱动器配置
 type DriverAccount struct {
 	gorm.Model
-	Name string `json:"name" gorm:"unique" binding:"required"` // 存储账户的唯一名称
-	//Type  string `json:"type" gorm:"type"`                      // 类型，即 driver 名
-	Type  string `json:"type"`               // 类型，即 driver 名
-	Index int    `json:"index" gorm:"index"` // 序列号, 由于数据中
+	Name  string `json:"name" gorm:"unique" binding:"required"` // 存储账户的唯一名称
+	Type  string `json:"type"`                                  // 类型，即 driver 名
+	Index int    `json:"index" gorm:"index"`                    // 序列号, 由于数据中
 	// for QiNiu
 	AccessKey string `json:"access_key" gorm:"column:qn_ak"`
 	SecretKey string `json:"secret_key" gorm:"column:qn_sk"`
@@ -35,8 +34,8 @@ type DriverAccount struct {
 var (
 	defDriver = DriverAccount{
 		Index:     0,
-		Name:      "qbox-01",
-		Type:      "qbox",
+		Name:      "qbox-def",
+		Type:      "qiniu",
 		AccessKey: "O_qaFxMC9xvkbMURCs5Dhcxf1EDZnUJKIlry72rh",
 		SecretKey: "v7YJbHOh-zzKQPw9o-7D60uxSpHdpSObCL7ZOcMF",
 		Bucket:    "j2go",
@@ -45,6 +44,10 @@ var (
 		Zone:      "Huanan",
 	}
 )
+
+func (d DriverAccount) String() string {
+	return fmt.Sprintf("Account: {\n\tName: %q,\n\tType: %q\n}", d.Name, d.Type)
+}
 
 // GetHost 使用后需要判断 host != ""
 // 可以用于自行拼接 url 提前返回
@@ -69,9 +72,12 @@ func (d DriverAccount) GetHost() string {
 func GetDriverAccount(path string) DriverAccount {
 	var res DriverAccount
 	if err := global.DB.First(&res).Error; err != nil {
-		global.Logf.Errorf("query driver account error >> %v\n will use default driver(%#q)", err, defDriver.Name)
+		global.Logf.Debugf("query driver account error >> %v \nwill use default driver(%#q)", err, defDriver.Name)
 		// 执行 save
-		go SaveDriverAccount(&defDriver)
+		go func() {
+			zap.L().Info("try save def driver_account")
+			SaveDriverAccount(&defDriver)
+		}()
 		return defDriver
 	}
 	return res
@@ -89,7 +95,7 @@ func SaveDriverAccount(account *DriverAccount) {
 // GetDriverAccounts 批量查找数据库中的 driver 账户
 func GetDriverAccounts() ([]DriverAccount, error) {
 	var res []DriverAccount
-	if err := global.DB.Order(columnName("driver_no")).Find(&res).Error; err != nil {
+	if err := global.DB.Order(columnName("index")).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil

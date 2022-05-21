@@ -33,8 +33,10 @@ func InitLogger() {
 		panic(err)
 	}
 
-	zap.ReplaceGlobals(logger) // 替换zap包中全局的logger实例，后续在其他包中只需使用zap.L()调用即可
-	global.Log = logger        // 注册到全局变量中
+	zap.ReplaceGlobals(logger)   // 替换zap包中全局的logger实例，后续在其他包中只需使用zap.L()调用即可
+	global.Log = logger          // 注册到全局变量中
+	global.Logf = logger.Sugar() // 注册到全局变量中
+	global.Log.Debug("logger init success!")
 }
 
 // func initLogLevel(atomicLevel *zap.AtomicLevel, logLevel int) {

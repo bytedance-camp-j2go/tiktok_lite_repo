@@ -21,7 +21,7 @@ func File(account *model.DriverAccount, path string) (*model.File, error) {
 // 也可以异步上传, 直接拼接 URL 返回给客户端, 但这么一定需要控制文件名不重复,
 // 		且驱动器没做强制断点续传要求, 使用 Host() 获取 URL 的方式需要谨慎
 func Upload(account *model.DriverAccount, stream model.FileStream) (string, error) {
-	driver, ok := base.GetDriver(account.Name)
+	driver, ok := base.GetDriver(account.Type)
 	if !ok {
 		return "", base.ErrNotSupport
 	}
