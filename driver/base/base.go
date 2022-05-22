@@ -67,3 +67,7 @@ func (b Model) Delete(path string, account *model.DriverAccount) error {
 func (b Model) Upload(file model.FileStream, account *model.DriverAccount) (string, error) {
 	return "", ErrNotImplement
 }
+
+func (b Model) Preview(url string) (string, error) {
+	return "", ErrNotImplement
+}

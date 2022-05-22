@@ -46,4 +46,6 @@ type Driver interface {
 
 	// Upload 上传
 	Upload(file model.FileStream, account *model.DriverAccount) (string, error)
+
+	Preview(url string) (string, error)
 }

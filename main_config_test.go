@@ -3,6 +3,7 @@ package main_test
 import (
 	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/bootstrap"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"os"
 	"testing"
 )
@@ -21,4 +22,8 @@ func TestGetEnv(t *testing.T) {
 	if env == "" {
 		fmt.Println("def")
 	}
+}
+
+func TestPath(t *testing.T) {
+	fmt.Println(util.ParentPath2Suffix("/usr/home"))
 }

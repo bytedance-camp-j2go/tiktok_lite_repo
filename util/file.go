@@ -128,3 +128,11 @@ func Split(p string) (string, string) {
 func Ext(name string) string {
 	return strings.TrimPrefix(path.Ext(name), ".")
 }
+
+// ParentPath2Suffix 去除 parent path 前缀 "/"
+func ParentPath2Suffix(name string) string {
+	if name[0] == '/' {
+		return name[1:]
+	}
+	return name
+}

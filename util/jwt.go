@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/dgrijalva/jwt-go/v4"
-	//"github.com/golang-jwt/jwt"
+	// "github.com/golang-jwt/jwt"
 	"time"
 )
 
@@ -17,15 +17,15 @@ type CustomClaims struct {
 var MySecret = []byte("a1b2c3d4")
 
 // GetToken 创建token，在调用此方法时，需要传入user对象
-//注意：这块传的user对象中不能存放密码等敏感信息，传入之前需删掉相关信息
+// 注意：这块传的user对象中不能存放密码等敏感信息，传入之前需删掉相关信息
 func GetToken(user model.User) (string, error) {
-	//设置jwt的payload
+	// 设置jwt的payload
 	claim := CustomClaims{
 		user,
-		jwt.StandardClaims{}, //存放签发者、签发时间、过期时间等信息，这块不设置过期时间
+		jwt.StandardClaims{}, // 存放签发者、签发时间、过期时间等信息，这块不设置过期时间
 	}
 
-	//获取token，使用HS256加密
+	// 获取token，使用HS256加密
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	return token.SignedString(MySecret)
 }
