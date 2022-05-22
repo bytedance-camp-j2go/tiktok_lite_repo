@@ -10,5 +10,5 @@ func PublishRouterGroup(publishGroup *gin.RouterGroup) {
 	// 视频投稿
 	publishGroup.POST("/action/", controller.PublishAction)
 	// 发布列表
-	publishGroup.GET("/list/")
+	publishGroup.GET("/list/", controller.PublishList)
 }

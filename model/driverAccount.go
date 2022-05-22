@@ -19,7 +19,7 @@ func init() {
 type DriverAccount struct {
 	gorm.Model
 	Name string `json:"name" gorm:"unique" binding:"required"` // 存储账户的唯一名称
-	//Type  string `json:"type" gorm:"type"`                      // 类型，即 driver 名
+	// Type  string `json:"type" gorm:"type"`                      // 类型，即 driver 名
 	Type  string `json:"type"`               // 类型，即 driver 名
 	Index int    `json:"index" gorm:"index"` // 序列号, 由于数据中
 	// for QiNiu

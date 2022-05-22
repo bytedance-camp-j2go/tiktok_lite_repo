@@ -1,8 +1,6 @@
 package dao
 
 import (
-	"container/list"
-	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"gorm.io/gorm"
@@ -16,7 +14,7 @@ func PublishActionDao(user model.User, playUrl string, coverUrl string, title st
 		Model:         gorm.Model{CreatedAt: time.Now(), UpdatedAt: time.Now()},
 		UserId:        user.Id,
 		PlayUrl:       playUrl,
-		CoveUrl:       coverUrl,
+		CoverUrl:      coverUrl,
 		FavoriteCount: 0,
 		CommentCount:  0,
 		Title:         title,
@@ -29,9 +27,24 @@ func PublishActionDao(user model.User, playUrl string, coverUrl string, title st
 }
 
 // PublishList 查询用户发布视频列表
-func PublishList(userId int64) list.List {
+func PublishList(userId int64) ([]model.Video, error) {
 	db := global.DB
-	video := model.Video{}
-	fmt.Println(video, db)
-	return list.List{}
+	var videos []model.Video
+	err := db.Where("user_id=?", userId).Find(&videos).Error
+	if err != nil {
+		return videos, err
+	}
+	return videos, nil
+}
+
+// UserFavorite 用户点赞的视频列表
+func UserFavorite(userId int64) ([]int64, error) {
+	db := global.DB
+	var videosId []int64
+	err := db.Table("user_favorite").Select("video_id").Where("user_id=?", userId).Find(&videosId).Error
+	if err != nil {
+		return videosId, err
+	}
+	return videosId, nil
+
 }

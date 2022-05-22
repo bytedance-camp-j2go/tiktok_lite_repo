@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/driver/operate"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
 	"github.com/gin-gonic/gin"
+	"github.com/wxnacy/wgo/arrays"
 	"net/http"
 	"path/filepath"
 )
@@ -60,14 +60,46 @@ func PublishAction(context *gin.Context) {
 }
 
 // PublishList 发布列表
-// 场景：即当用户点开某一视频up主页，可以看到其视频列表
+// 场景：登录用户的视频发布列表，列出用户所有投稿过的视频
 func PublishList(context *gin.Context) {
-	// 获取up主信息
+	// 获取用户信息
 	var a any
-	a = context.Query("user_id")
-	publisherId := a.(int64)
-	publisher, _ := dao.UserInfoById(publisherId)
-	// 查询up主发布的视频列表
-	fmt.Println(publisher)
-
+	a, _ = context.Get(global.UserName)
+	user := a.(model.User)
+	// 封装用户响应信息
+	userResp := response.User{
+		Id:            user.Id,
+		Name:          user.Name,
+		FollowCount:   user.FollowCount,
+		FollowerCount: user.FollowerCount,
+		IsFollow:      true, // 注意；这里是用户看自己的主页，所以肯定是关注了自己的
+	}
+	// 查询用户发布的视频列表
+	videos, err := dao.PublishList(user.Id)
+	if err != nil {
+		context.JSON(http.StatusOK, response.Response{StatusCode: 1, StatusMsg: "查询失败"})
+		return
+	}
+	// 查询用户点赞过自己的视频
+	videosId, _ := dao.UserFavorite(user.Id)
+	size := len(videos)
+	videosResp := make([]response.VideoList, size, size)
+	// var videosResp [size]response.VideoList
+	// 创建响应对象
+	for i, v := range videos {
+		videosResp[i].Id = int64(v.Model.ID)
+		videosResp[i].Author = userResp // 用户信息
+		videosResp[i].PlayUrl = v.PlayUrl
+		videosResp[i].CoveUrl = v.CoverUrl
+		videosResp[i].FavoriteCount = v.FavoriteCount
+		videosResp[i].CommentCount = v.CommentCount
+		videosResp[i].CommentCount = v.CommentCount
+		videosResp[i].IsFavorite = arrays.ContainsInt(videosId, int64(v.ID)) > 0
+		videosResp[i].IsFavorite = true // 注意：这块需要判断用户对这个视频有没有点赞
+		videosResp[i].Title = v.Title
+	}
+	context.JSON(http.StatusOK, response.PublishListResponse{
+		Response:  response.Response{StatusCode: 0, StatusMsg: "成功"},
+		VideoList: videosResp,
+	})
 }

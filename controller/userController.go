@@ -14,8 +14,9 @@ import (
 
 type UserController struct{}
 
-// UserInfo 获取用户信息
-func UserInfo(context *gin.Context) {
+// UserInfoOther 获取用户信息
+// 注意：这是到达别人的主页，返回别人的信息
+func UserInfoOther(context *gin.Context) {
 	// 分别获取发布视频者id和用户token
 	// 注意：这块使用context.query()获取的是字符串类型，需要将字符串转换为int64
 	var publishId int64
@@ -41,6 +42,24 @@ func UserInfo(context *gin.Context) {
 	context.JSON(http.StatusOK, userResp)
 }
 
+// UserInfo 获取当前登录用户的信息
+func UserInfo(context *gin.Context) {
+	// 获取当前用户
+	user, _ := context.Get(global.UserName)
+	// 封装用户信息
+	userResp := response.User{
+		Id:            user.(model.User).Id,
+		Name:          user.(model.User).Name,
+		FollowCount:   user.(model.User).FollowerCount,
+		FollowerCount: user.(model.User).FollowerCount,
+		IsFollow:      true, // 由于这里是用户在主页看到自己信息，所以是默认关注自己的
+	}
+	context.JSON(http.StatusOK, response.UserResponse{
+		Response: response.Response{StatusCode: 0, StatusMsg: "成功"},
+		User:     userResp,
+	})
+}
+
 // UserRegister 用户注册
 func UserRegister(context *gin.Context) {
 	// 获取账号密码
@@ -58,7 +77,7 @@ func UserRegister(context *gin.Context) {
 	user := model.User{Id: userId, UserName: username, PassWord: password}
 	token, _ := util.GetToken(user)
 	context.JSON(http.StatusOK, response.UserRegisterResponse{
-		Response: response.Response{StatusCode: 200},
+		Response: response.Response{StatusCode: 200, StatusMsg: "注册成功"},
 		UserId:   userId,
 		Token:    token,
 	})
