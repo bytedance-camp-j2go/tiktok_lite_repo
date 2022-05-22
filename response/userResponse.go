@@ -1,7 +1,3 @@
-/**
-* @Author:drl
-* @Date: 2022/5/19 13:02
- */
 package response
 
 // User 返回用户信息中的User对象
