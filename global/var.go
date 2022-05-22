@@ -5,6 +5,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
 	_ "go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 var (
@@ -21,4 +22,6 @@ var (
 	RedisDB *redis.Client
 	// Mysql 连接
 
+	// DB 获取mysql连接
+	DB *gorm.DB
 )

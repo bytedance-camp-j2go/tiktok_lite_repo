@@ -3,7 +3,6 @@ package main_test
 import (
 	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/bootstrap"
-	"go.uber.org/zap"
 	"os"
 	"testing"
 )
@@ -11,8 +10,8 @@ import (
 // 多版本测试
 func TestMultiVersionViper(t *testing.T) {
 	bootstrap.InitConfig()
-	bootstrap.InitLogger()
-	zap.L().Debug("111")
+	fmt.Println("--------------")
+	bootstrap.InitDB()
 }
 
 // 测试环境变量 `GO_ENV` 的获取
