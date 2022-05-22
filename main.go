@@ -24,8 +24,6 @@ func main() {
 	//初始化数据库
 	bootstrap.InitDB()
 
-	bootstrap.InitModel()
-
 	err := r.Run(fmt.Sprintf(":%d", global.Conf.Port))
 	if err != nil {
 		global.Logf.Errorf("serve run error >> %s", err.Error())
