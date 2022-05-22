@@ -8,6 +8,9 @@ import (
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
+	"io"
+	"os"
+	"os/user"
 	"strings"
 	"testing"
 	"time"
@@ -49,20 +52,11 @@ import (
 
 */
 
-func TestUpload(t *testing.T) {
-	bootstrap.InitAll()
-
-	reader := strings.NewReader(`{"msg":"hello!"}`)
-	user := model.User{
-		Id:       123123,
-		UserName: "",
-		PassWord: "",
-		Name:     "",
-	}
+func testUpload(path, name string, size int64, reader io.Reader) {
 	fileStream := model.FileStream{
-		ParentPath: fmt.Sprintf("%v/%s", user.Id, util.GetNowFormatTodayTime()),
-		Name:       fmt.Sprintf("test-%d.json", time.Now().Unix()),
-		Size:       reader.Size(),
+		ParentPath: path,
+		Name:       name,
+		Size:       size,
 		File:       reader,
 	}
 
@@ -74,5 +68,42 @@ func TestUpload(t *testing.T) {
 	} else {
 		global.Logf.Infof("visit >> %v\n", url)
 	}
+}
 
+func TestUploadJSON(t *testing.T) {
+	bootstrap.InitAll()
+
+	reader := strings.NewReader(`{"msg":"hello!"}`)
+	user := model.User{
+		Id:       123123,
+		UserName: "",
+		PassWord: "",
+		Name:     "",
+	}
+
+	testUpload(
+		fmt.Sprintf("%v/%s", user.Id, util.GetNowFormatTodayTime()),
+		fmt.Sprintf("test-%d.json", time.Now().Unix()),
+		reader.Size(),
+		reader,
+	)
+}
+
+func TestUploadLocalFile(t *testing.T) {
+	bootstrap.InitAll()
+	sysUser, _ := user.Current()
+	filePath := sysUser.HomeDir
+	fileName := "1942357430.mp4"
+	file, err := os.OpenFile(fmt.Sprintf("%s/%s", filePath, fileName), os.O_CREATE|os.O_APPEND, 6)
+	if err != nil {
+		return
+	}
+
+	info, err := file.Stat()
+
+	testUpload(
+		"/test-video", info.Name(),
+		info.Size(),
+		file,
+	)
 }
