@@ -1,7 +1,3 @@
-/**
-* @Author:drl
-* @Date: 2022/5/19 13:12
- */
 package response
 
 type Response struct {

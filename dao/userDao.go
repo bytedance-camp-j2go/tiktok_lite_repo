@@ -23,7 +23,7 @@ func UserLogin(username string) (model.User, error) {
 	db := global.DB
 	user := model.User{}
 	err := db.Where("username=?", username).Find(&user).Error
-	//说明为空
+	// 说明为空
 	if user == (model.User{}) {
 		return user, err
 	}
@@ -33,7 +33,7 @@ func UserLogin(username string) (model.User, error) {
 // UserRegister 用户注册
 func UserRegister(username string, password string) (int64, error) {
 	db := global.DB
-	//先查询这个用户名是否存在
+	// 先查询这个用户名是否存在
 	user, err := UserLogin(username)
 	if user != (model.User{}) {
 		return -1, err
