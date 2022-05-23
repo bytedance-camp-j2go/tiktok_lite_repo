@@ -17,10 +17,16 @@ import (
 	"time"
 )
 
-// PublishAction 视频投稿
+// 文件前缀格式: uid/ConfusionName
+const fileSuffixFormat = "/test/%b/%s"
+
+// PublishAction 解释错误信息:
+// 1 获取表单视频数据失败
+// 2 上传到存储器失败
 func PublishAction(context *gin.Context) {
 	// 从上下文获取用户信息
 	ctxVal, _ := context.Get(global.UserName)
+
 	user, ok := ctxVal.(model.User)
 	if !ok {
 		zap.L().Error("user info err!")
@@ -39,37 +45,45 @@ func PublishAction(context *gin.Context) {
 
 	// 获取视频文件名称，只是视频文件名称及后缀，
 	// 例：test.txt ---> test-14:04:05.1231.txt
-	finalName := fileName(data.Filename)
+	finalName := ConfusionName(data.Filename)
 
 	// 创建fileStream流
 	file, _ := data.Open()
+
 	fileStream := model.FileStream{
 		File: file,
 		Size: data.Size,
 		// 格式: userid/time
-		ParentPath: fmt.Sprintf("/test/%b/%s", user.Id, util.GetNowFormatTodayTime()),
+		ParentPath: fmt.Sprintf(fileSuffixFormat, user.Id, util.GetNowFormatTodayTime()),
 		Name:       finalName,
 		MIMEType:   context.ContentType(),
 	}
 
 	driverAccount := model.GetDriverAccount(fileStream.ParentPath)
 	// 上传文件，res是上传之后的视频url
-	videoUrl, err := operate.Upload(&driverAccount, fileStream)
+	videoUrl, errV := operate.Upload(&driverAccount, fileStream)
 	// 获取视频封面url
-	picUrl := videoUrl + "?vframe/jpg/offset/1"
-	// 获取视频标题
-	title := context.Query("title")
-	if err != nil {
+	coverUrl, errC := operate.Preview(&driverAccount, videoUrl)
+	if errV != nil && errC != nil {
 		// 注意：状态码 0成功 其他值失败
-		context.JSON(http.StatusOK, response.Response{StatusCode: 1, StatusMsg: err.Error()})
+		context.JSON(http.StatusOK, response.Response{
+			StatusCode: 2,
+			StatusMsg:  fmt.Sprintf("上传失败: %v, %v", errV, errC),
+		})
 		return
 	}
-	dao.PublishActionDao(user, videoUrl, picUrl, title)
-	context.JSON(http.StatusOK, response.Response{StatusCode: 0, StatusMsg: picUrl})
+
+	// 执行上传数据写入数据库,  TODO 如果这里失败上传需要通知存储器删除视频 确保不存在数据"孤岛"
+	err = dao.PublishActionDao(user, videoUrl, coverUrl, context.Param("title"))
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, response.Response{StatusCode: 3, StatusMsg: err.Error()})
+		return
+	}
+	context.JSON(http.StatusOK, response.Response{StatusCode: 0})
 }
 
-// 用时间戳混淆时间戳
-func fileName(o string) string {
+// ConfusionName 用时间戳混淆时间戳
+func ConfusionName(o string) string {
 	fileExt := path.Ext(o)
 	fName := strings.TrimSuffix(o, fileExt)
 
