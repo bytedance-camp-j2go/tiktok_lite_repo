@@ -18,9 +18,9 @@ func init() {
 // DriverAccount 通过接口向数据库存入驱动器配置
 type DriverAccount struct {
 	gorm.Model
-	Name  string `json:"name" gorm:"unique" binding:"required"` // 存储账户的唯一名称
-	Type  string `json:"type" gorm:"type"`                      // 类型，即 driver 名
-	Index int    `json:"index" gorm:"index"`                    // 序列号, 由于数据中
+	Name string `json:"name" gorm:"unique" binding:"required"` // 存储账户的唯一名称
+	//Type  string `json:"type" gorm:"type"`                      // 类型，即 driver 名
+	Index int `json:"index" gorm:"index"` // 序列号, 由于数据中
 	// for QiNiu
 	AccessKey string `json:"access_key" gorm:"column:qn_ak"`
 	SecretKey string `json:"secret_key" gorm:"column:qn_sk"`
@@ -33,9 +33,9 @@ type DriverAccount struct {
 
 var (
 	defDriver = DriverAccount{
-		Index:     0,
-		Name:      "qbox-01",
-		Type:      "qbox",
+		Index: 0,
+		Name:  "qbox-01",
+		//Type:      "qbox",
 		AccessKey: "O_qaFxMC9xvkbMURCs5Dhcxf1EDZnUJKIlry72rh",
 		SecretKey: "v7YJbHOh-zzKQPw9o-7D60uxSpHdpSObCL7ZOcMF",
 		Bucket:    "j2go",

@@ -1,7 +1,6 @@
 package bootstrap
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/controller"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/middleware"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/router"
 	"github.com/gin-gonic/gin"
@@ -17,8 +16,8 @@ func InitRouter(r *gin.Engine) {
 	//用户注册、登录接口
 	router.UserRouterGroup(user)
 
+	favorite := dy.Group("/favorite")
+	router.FavoriteRouterGroup(favorite)
 	// TODO SOME IMPL
 
-	dy.POST("/favorite/action/", controller.FavoriteAction)
-	dy.GET("/favorite/list/", controller.FavoriteList)
 }

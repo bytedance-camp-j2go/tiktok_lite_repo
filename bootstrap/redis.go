@@ -6,6 +6,7 @@ import (
 )
 
 func InitRedis() {
+
 	global.RedisDB = redis.NewClient(&redis.Options{
 		Addr:     global.Conf.Redis.String(),
 		Password: global.Conf.Redis.Password,
