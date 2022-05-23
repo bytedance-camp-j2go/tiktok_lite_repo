@@ -73,7 +73,7 @@ func FavoriteAction(c *gin.Context) {
 		*/
 
 		//维护一个set，key为favorite_count_set::videoId，value为用户id
-		//用来保存这个视频下面哪些用户点赞，且set中用户不可重复，重复点赞返回错误
+		//用来保存这个视频下面哪些用户点赞
 		global.RedisDB.SAdd(c, "favorite_count_set::"+videoId, userId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
