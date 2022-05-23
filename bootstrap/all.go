@@ -25,7 +25,7 @@ func InitAll() {
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	go func() {
-		InitRedis()
+		// InitRedis()
 		wg.Done()
 	}()
 
