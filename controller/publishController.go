@@ -9,7 +9,6 @@ import (
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/gin-gonic/gin"
-	"github.com/wxnacy/wgo/arrays"
 	"go.uber.org/zap"
 	"net/http"
 	"path"
@@ -100,6 +99,8 @@ func PublishList(context *gin.Context) {
 	}
 	// 查询用户点赞过自己的视频
 	videosId, _ := dao.UserFavorite(user.Id)
+	// 将videosId转换为map
+	videosIdMap := util.ArrayIntConvertMap(videosId)
 	size := len(videos)
 	videosResp := make([]response.VideoList, size, size)
 	// var videosResp [size]response.VideoList
@@ -112,7 +113,8 @@ func PublishList(context *gin.Context) {
 		videosResp[i].FavoriteCount = v.FavoriteCount
 		videosResp[i].CommentCount = v.CommentCount
 		videosResp[i].CommentCount = v.CommentCount
-		videosResp[i].IsFavorite = arrays.ContainsInt(videosId, int64(v.ID)) > 0
+		_, exists := videosIdMap[int64(v.ID)] // 判断这个视频用户是否点赞过，点赞 true 未点赞 false
+		videosResp[i].IsFavorite = exists
 		videosResp[i].IsFavorite = true // 注意：这块需要判断用户对这个视频有没有点赞
 		videosResp[i].Title = v.Title
 	}

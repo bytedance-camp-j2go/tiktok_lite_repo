@@ -3,6 +3,7 @@ package response
 // User 返回用户信息中的User对象
 type User struct {
 	Id            int64  `json:"id"`             // 视频发布者id
+	UserId        int64  `json:"user_id"`        // 视频发布者id
 	Name          string `json:"name"`           // 视频发布者昵称
 	FollowCount   int64  `json:"follow_count"`   // 视频发布者关注数量
 	FollowerCount int64  `json:"follower_count"` // 视频发布者粉丝数量

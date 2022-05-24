@@ -31,19 +31,20 @@ func UserLogin(username string) (model.User, error) {
 }
 
 // UserRegister 用户注册
-func UserRegister(username string, password string) (int64, error) {
+func UserRegister(username string, password string) (model.User, error) {
 	db := global.DB
 	// 先查询这个用户名是否存在
 	user, err := UserLogin(username)
 	if user != (model.User{}) {
-		return -1, err
+		return user, err
 	}
-	user = model.User{UserName: username, PassWord: password}
+	// 使用雪花算法生成userId，这边暂时使用111代替
+	user = model.User{UserId: 111, UserName: username, PassWord: password}
 	err = db.Create(&user).Error
 	if err != nil {
-		return -1, err
+		return user, err
 	}
-	return user.Id, nil
+	return user, nil
 }
 
 // UserFollower 查询user用户的关注列表中是否有publisher用户

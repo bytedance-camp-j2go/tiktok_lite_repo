@@ -68,17 +68,16 @@ func UserRegister(context *gin.Context) {
 	username := context.Query("username")
 	password := context.Query("password")
 	// 插入数据
-	userId, err := dao.UserRegister(username, password)
+	user, err := dao.UserRegister(username, password)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, "账号重复，请重新设置")
 		return
 	}
 	// 生成token
-	user := model.User{Id: userId, UserName: username, PassWord: password}
 	token, _ := util.GetToken(user)
 	context.JSON(http.StatusOK, response.UserRegisterResponse{
 		Response: response.Response{StatusCode: 200, StatusMsg: "注册成功"},
-		UserId:   userId,
+		UserId:   user.UserId,
 		Token:    token,
 	})
 }
@@ -86,8 +85,6 @@ func UserRegister(context *gin.Context) {
 // UserLogin 用户登录
 func UserLogin(context *gin.Context) {
 	// 获取账号密码
-	// username := context.PostForm("username")
-	// password := context.PostForm("password")
 	username := context.Query("username")
 	password := context.Query("password")
 	// 查询用户是否存在
@@ -98,11 +95,13 @@ func UserLogin(context *gin.Context) {
 	}
 	// strings.Compare(s1,s2), 0代表相等，1代表s1>s2,-1代表s1<s2
 	if strings.Compare(password, user.PassWord) == 0 {
+		// 先使用雪花算法生成userId
+		// user.UserId=
 		// 获取token
 		token, _ := util.GetToken(user)
 		context.JSON(http.StatusOK, response.UserLoginResponse{
 			Response: response.Response{StatusCode: 200, StatusMsg: "登录成功"},
-			UserId:   user.Id,
+			UserId:   user.UserId,
 			Token:    token,
 		})
 	} else {
