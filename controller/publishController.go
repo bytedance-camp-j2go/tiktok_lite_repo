@@ -18,11 +18,14 @@ import (
 )
 
 // 文件前缀格式: uid/ConfusionName
-const fileSuffixFormat = "/test/%b/%s"
+const (
+	fileSuffixFormat = "/test/%b/%s"
+)
 
 // PublishAction 解释错误信息:
 // 1 获取表单视频数据失败
 // 2 上传到存储器失败
+// 3 上传索引保存失败, 上传操作无效
 func PublishAction(context *gin.Context) {
 	// 从上下文获取用户信息
 	ctxVal, _ := context.Get(global.UserName)
@@ -73,12 +76,21 @@ func PublishAction(context *gin.Context) {
 		return
 	}
 
-	// 执行上传数据写入数据库,  TODO 如果这里失败上传需要通知存储器删除视频 确保不存在数据"孤岛"
-	err = dao.PublishActionDao(user, videoUrl, coverUrl, context.Param("title"))
+	// 执行上传数据写入数据库, TODO 如果这里失败上传需要通知存储器删除视频 确保不存在数据"孤岛"
+	videoId, err := dao.PublishActionDao(user, videoUrl, coverUrl, context.Param("title"))
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, response.Response{StatusCode: 3, StatusMsg: err.Error()})
 		return
 	}
+
+	// 异步写入到 redis 缓存, 逻辑 >>
+	// 存入当前时间 + video id, 取区间将其查出
+	go util.ZAdd2Redis(
+		global.VideoSeqSetKey,
+		float64(util.TimeNowInt64()),
+		videoId,
+	)
+
 	context.JSON(http.StatusOK, response.Response{StatusCode: 0})
 }
 

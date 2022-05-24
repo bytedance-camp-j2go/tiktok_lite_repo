@@ -29,7 +29,7 @@ func JWTAuth() gin.HandlerFunc {
 		tokenStr := c.Query("token")
 		// fmt.Println(tokenStr)
 		if tokenStr == "" {
-			c.JSON(http.StatusForbidden, "无权访问，请求未带token")
+			c.JSON(http.StatusForbidden, "Permission denied!")
 			c.Abort()
 			return
 		}

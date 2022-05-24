@@ -18,5 +18,10 @@ const (
   DefExpiration = 0*/
 )
 
-// UserName 鉴权成功后，在context中存入user信息，其key为userName
-const UserName = "requestUser"
+const (
+	// UserName 鉴权成功后，在context中存入user信息，其key为userName
+	UserName = "requestUser"
+
+	// VideoSeqSetKey 视频列表 ZSet key
+	VideoSeqSetKey = "video:id-seq"
+)

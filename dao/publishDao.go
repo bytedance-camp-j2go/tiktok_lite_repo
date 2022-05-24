@@ -3,14 +3,16 @@ package dao
 import (
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"gorm.io/gorm"
 	"time"
 )
 
 // PublishActionDao 视频投稿，将视频信息持久化到数据库中
-func PublishActionDao(user model.User, playUrl string, coverUrl string, title string) error {
+func PublishActionDao(user model.User, playUrl string, coverUrl string, title string) (uint64, error) {
 	db := global.DB
 	video := model.Video{
+		VideoId:       util.UniqueID(),
 		Model:         gorm.Model{CreatedAt: time.Now(), UpdatedAt: time.Now()},
 		UserId:        user.Id,
 		PlayUrl:       playUrl,
@@ -20,10 +22,12 @@ func PublishActionDao(user model.User, playUrl string, coverUrl string, title st
 		Title:         title,
 	}
 	err := db.Create(video).Error
+
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+
+	return video.VideoId, nil
 }
 
 // PublishList 查询用户发布视频列表

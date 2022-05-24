@@ -9,10 +9,6 @@ import (
 
 // 封装 Redis 增删、简单操作
 
-func getNowTime() int64 {
-	return time.Now().UnixMilli()
-}
-
 func Save2Redis(key string, v []byte, expires time.Duration) {
 	result, err := global.RedisDB.Set(global.RedisDB.Context(), key, v, expires).Result()
 	if err != nil {
@@ -37,4 +33,24 @@ func GetStringFromRedis(key string) (string, error) {
 		return "", err
 	}
 	return res, nil
+}
+
+func ZAdd2Redis(key string, score float64, v any) {
+	global.RedisDB.ZAdd(
+		global.RedisDB.Context(),
+		key,
+		&redis.Z{
+			Score: score, Member: v,
+		},
+	)
+}
+
+// ZSetRangeByScore 范围查找值
+func ZSetRangeByScore(key string, z *redis.ZRangeBy) ([]string, error) {
+
+	return global.RedisDB.ZRangeByScore(global.RedisDB.Context(), key, z).Result()
+}
+
+func ZSetCnt(key string) (int64, error) {
+	return global.RedisDB.ZCard(global.RedisDB.Context(), key).Result()
 }
