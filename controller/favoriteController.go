@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
@@ -12,28 +11,22 @@ import (
 	"time"
 )
 
+/*
+点赞行为
+*/
 func FavoriteAction(c *gin.Context) {
 	userId := c.Query("user_id")
 	videoId := c.Query("video_id")
 	actionType := c.Query("action_type")
 
-	actionTypeInt, err := strconv.ParseInt(actionType, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, response.FavoriteActionResponse{
-			Response: response.Response{StatusCode: -1, StatusMsg: "行为类型有误"},
-		})
-		return
-	}
-
-	//行为类型为1，点赞
-	//行为类型为2，取消点赞
-	if actionTypeInt == 1 {
+	switch actionType {
+	case "1":
 		zset := &redis.Z{
 			Score:  float64(time.Now().Unix()),
 			Member: videoId,
 		}
 		//维护一个排序集合，key为favorite_set::userId，value 为videoId，按照时间顺序排序
-		err = global.RedisDB.ZAdd(c, "favorite_set::"+userId, zset).Err()
+		err := global.RedisDB.ZAdd(c, "favorite_set::"+userId, zset).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
 				Response: response.Response{StatusCode: -1, StatusMsg: "redis添加失败"},
@@ -41,40 +34,9 @@ func FavoriteAction(c *gin.Context) {
 			return
 		}
 
-		/**
-		//可重复点赞，暂时不用
-		//维护一个K-V对，key为favorite_count::videoId，value为视频点赞数
-		result, err := global.RedisDB.Keys(c, "favorite_count::"+videoId).Result()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
-				Response: response.Response{StatusCode: -1, StatusMsg: "redis查找出错"},
-			})
-			return
-		}
-		if result == nil {
-			err = global.RedisDB.Set(c, "favorite_count::"+videoId, 1, -2).Err()
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
-					Response: response.Response{StatusCode: -1, StatusMsg: "redis添加失败"},
-				})
-				return
-			}
-		} else {
-			global.RedisDB.Incr(c, "favorite_count::"+videoId).Err()
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
-					Response: response.Response{StatusCode: -1, StatusMsg: "redis自增失败"},
-				})
-				return
-			}
-		}
-
-
-		*/
-
 		//维护一个set，key为favorite_count_set::videoId，value为用户id
 		//用来保存这个视频下面哪些用户点赞
-		global.RedisDB.SAdd(c, "favorite_count_set::"+videoId, userId).Err()
+		err = global.RedisDB.SAdd(c, "favorite_count_set::"+videoId, userId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
 				Response: response.Response{StatusCode: -1, StatusMsg: "redis sadd出错"},
@@ -85,9 +47,9 @@ func FavoriteAction(c *gin.Context) {
 		c.JSON(http.StatusOK, response.FavoriteActionResponse{
 			Response: response.Response{StatusCode: 0, StatusMsg: "点赞成功"},
 		})
-	} else if actionTypeInt == 2 {
+	case "2":
 		//从zset中删除取消点赞的视频
-		err = global.RedisDB.ZRem(c, "favorite_set::"+userId, videoId).Err()
+		err := global.RedisDB.ZRem(c, "favorite_set::"+userId, videoId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
 				Response: response.Response{StatusCode: -1, StatusMsg: "redis zset 删除出错"},
@@ -95,17 +57,6 @@ func FavoriteAction(c *gin.Context) {
 			return
 		}
 
-		/**
-		对应上面的可重复点赞
-		//该视频的点赞数-1
-		err = global.RedisDB.Decr(c, "favorite_count::"+videoId).Err()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
-				Response: response.Response{StatusCode: -1, StatusMsg: "取消点赞出错"},
-			})
-			return
-		}
-		*/
 		//取消点赞，从favorite_count_set::videoId删除该用户
 		err = global.RedisDB.SRem(c, "favorite_count_set::"+videoId, userId).Err()
 		if err != nil {
@@ -118,32 +69,50 @@ func FavoriteAction(c *gin.Context) {
 		c.JSON(http.StatusOK, response.FavoriteActionResponse{
 			Response: response.Response{StatusCode: 0, StatusMsg: "成功取消点赞"},
 		})
-
-	} else {
-		c.JSON(http.StatusOK, response.FavoriteActionResponse{
+	default:
+		c.JSON(http.StatusBadRequest, response.FavoriteActionResponse{
 			Response: response.Response{StatusCode: -1, StatusMsg: "非法点赞行为"},
 		})
 	}
 
 }
 
+/**
+获取点赞列表
+*/
 func FavoriteList(c *gin.Context) {
 	userId := c.Query("user_id")
 
 	res, err := global.RedisDB.ZRange(c, "favorite_set::"+userId, 0, -1).Result()
 	if err != nil {
-		fmt.Printf("redis smembers failed! err:%v\n", err)
+		c.JSON(http.StatusInternalServerError, response.FavoriteListResponse{
+			Response:  response.Response{StatusCode: -1, StatusMsg: "redis查询出错"},
+			VideoList: nil,
+		})
 		return
 	}
-	fmt.Println(res)
-	var list []model.Video
+
+	list := make([]model.Video, len(res))
+
+	for i := 0; i < len(res); i++ {
+		// todo 这里需要根据videoId获取视频对象
+		videoId, _ := strconv.ParseInt(res[i], 10, 64)
+		list[i] = model.Video{
+			VideoId:       videoId,
+			UserId:        videoId,
+			PlayUrl:       "www.baidu.com",
+			CoveUrl:       "www.taobao.com",
+			FavoriteCount: 666,
+			CommentCount:  222,
+			Title:         res[i],
+		}
+	}
 
 	c.JSON(http.StatusOK, response.FavoriteListResponse{
-		Response:  response.Response{StatusCode: -1, StatusMsg: "获取列表成功"},
+		Response:  response.Response{StatusCode: 0, StatusMsg: "获取列表成功"},
 		VideoList: list,
 	})
 
-	//todo 通过视频id数组 查询到 视频对象数组
 }
 
 //提供方法：根据视频id查询出视频点赞数

@@ -18,6 +18,10 @@ func InitRouter(r *gin.Engine) {
 
 	favorite := dy.Group("/favorite")
 	router.FavoriteRouterGroup(favorite)
+
+	relation := dy.Group("/relation")
+	router.RelationRouterGroup(relation)
+
 	// TODO SOME IMPL
 
 }
