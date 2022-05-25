@@ -9,7 +9,7 @@ import (
 )
 
 // PublishActionDao 视频投稿，将视频信息持久化到数据库中
-func PublishActionDao(user model.User, playUrl string, coverUrl string, title string) (uint64, error) {
+func PublishActionDao(user model.User, playUrl string, coverUrl string, title string) (int64, error) {
 	db := global.DB
 	video := model.Video{
 		VideoId:       util.UniqueID(),

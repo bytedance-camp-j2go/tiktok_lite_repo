@@ -36,7 +36,22 @@ func TestZSetCnt(t *testing.T) {
 
 func TestZSetRangeByScore(t *testing.T) {
 	bootstrap.InitAll()
-	res, err := util.ZSetRangeByScore("test:"+global.VideoSeqSetKey, &redis.ZRangeBy{
+	res, err := util.ZSetRangeByScoreStrings("test:"+global.VideoSeqSetKey, &redis.ZRangeBy{
+		Max:    strconv.FormatInt(util.TimeNowInt64(), 10),
+		Min:    "-inf",
+		Offset: 0,
+		Count:  5,
+	})
+	if err != nil {
+		zap.L().Error("", zap.Error(err))
+		return
+	}
+	global.Logf.Infof("ZSetRange >> %#v\n", res)
+}
+
+func TestZSetRangeByScoreInt(t *testing.T) {
+	bootstrap.InitAll()
+	res, err := util.ZSetRangeByScoreInt("test:"+global.VideoSeqSetKey, &redis.ZRangeBy{
 		Max:    strconv.FormatInt(util.TimeNowInt64(), 10),
 		Min:    "-inf",
 		Offset: 0,

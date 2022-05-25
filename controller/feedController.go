@@ -45,7 +45,7 @@ func feedProcess(ctx *gin.Context, start time.Time) {
 		Count:  videoCnt,
 	}
 
-	videoIdList, err := util.ZSetRangeByScore(global.VideoSeqSetKey, rangeBy)
+	videoIdList, err := util.ZSetRangeByScoreStrings(global.VideoSeqSetKey, rangeBy)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.Response{StatusCode: 1})
 		return
@@ -62,6 +62,7 @@ func feedProcess(ctx *gin.Context, start time.Time) {
 // TODO
 func videoProcess(videoIds []string) []model.Video {
 	res := make([]model.Video, 0, len(videoIds))
+
 	return res
 }
 
