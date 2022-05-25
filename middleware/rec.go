@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -29,9 +29,9 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 
 				httpRequest, _ := httputil.DumpRequest(c.Request, false)
 				if brokenPipe {
-					zap.L().Error(c.Request.URL.Path,
-						zap.Any("error", err),
-						zap.String("request", string(httpRequest)),
+					global.Logf.Errorf(
+						c.Request.URL.Path+"error: %v\n +request: %v\n",
+						err, string(httpRequest),
 					)
 					// If the connection is dead, we can't write a status to it.
 					c.Error(err.(error)) // nolint: errcheck
@@ -40,15 +40,15 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 				}
 
 				if stack {
-					zap.L().Error("[Recovery from panic]",
-						zap.Any("error", err),
-						zap.String("request", string(httpRequest)),
-						zap.String("stack", string(debug.Stack())),
+					global.Logf.Errorf("[Recovery from panic] err: %v\n req: %v\n stack: %v\n",
+						err,
+						string(httpRequest),
+						string(debug.Stack()),
 					)
 				} else {
-					zap.L().Error("[Recovery from panic]",
-						zap.Any("error", err),
-						zap.String("request", string(httpRequest)),
+					global.Logf.Errorf("[Recovery from panic] err: %v\n req: %v\n",
+						err,
+						string(httpRequest),
 					)
 				}
 				c.AbortWithStatus(http.StatusInternalServerError)

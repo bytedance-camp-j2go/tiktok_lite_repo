@@ -17,12 +17,11 @@ func Save2Redis(key string, v []byte, expires time.Duration) {
 		return
 	}
 	zap.L().Debug("save2redis", zap.String("say", result))
-
 }
 
 func ExistKey(key string) (bool, error) {
 	cnt, err := global.RedisDB.Exists(global.RedisDB.Context(), key).Result()
-	if err != redis.Nil {
+	if err != nil || err == redis.Nil {
 		return false, err
 	}
 	return cnt > 0, nil
@@ -30,7 +29,7 @@ func ExistKey(key string) (bool, error) {
 
 func GetStringFromRedis(key string) (string, error) {
 	res, err := global.RedisDB.Get(global.RedisDB.Context(), key).Result()
-	if err != redis.Nil {
+	if err != nil {
 		return "", err
 	}
 	return res, nil

@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
+	"go.uber.org/zap"
 	"net/http"
 	"strconv"
 	"time"
@@ -45,8 +47,9 @@ func feedProcess(ctx *gin.Context, start time.Time) {
 		Count:  videoCnt,
 	}
 
-	videoIdList, err := util.ZSetRangeByScoreStrings(global.VideoSeqSetKey, rangeBy)
-	if err != nil {
+	videoIdList, err := util.ZSetRangeByScoreInt(global.VideoSeqSetKey, rangeBy)
+
+	if len(videoIdList) == 0 && err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.Response{StatusCode: 1})
 		return
 	}
@@ -60,10 +63,13 @@ func feedProcess(ctx *gin.Context, start time.Time) {
 }
 
 // TODO
-func videoProcess(videoIds []string) []model.Video {
-	res := make([]model.Video, 0, len(videoIds))
-
-	return res
+func videoProcess(videoIds []int64) []model.Video {
+	videos, err := dao.VideoQueryList(videoIds)
+	if err != nil {
+		zap.L().Error("获取视频信息失败!!", zap.Error(err))
+		return nil
+	}
+	return videos
 }
 
 // ParsingTimestampStr 解析时间戳字符串

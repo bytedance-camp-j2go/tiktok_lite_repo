@@ -39,11 +39,12 @@ func PublishAction(context *gin.Context) {
 
 	// 获取视频信息
 	data, err := context.FormFile("data")
-	if err != nil {
+	if data == nil || err != nil {
 		context.JSON(http.StatusOK, response.PublishActionResponse{
 			// 注意：状态码 0成功，其他失败
-			Response: response.Response{StatusCode: 1, StatusMsg: "上传失败"}},
+			Response: response.Response{StatusCode: 1, StatusMsg: "上传文件获取失败"}},
 		)
+		return
 	}
 
 	// 获取视频文件名称，只是视频文件名称及后缀，
@@ -65,19 +66,27 @@ func PublishAction(context *gin.Context) {
 	driverAccount := model.GetDriverAccount(fileStream.ParentPath)
 	// 上传文件，res是上传之后的视频url
 	videoUrl, errV := operate.Upload(&driverAccount, fileStream)
+	if errV != nil {
+		context.JSON(http.StatusOK, response.Response{
+			StatusCode: 2,
+			StatusMsg:  fmt.Sprintf("上传失败: %v", errV),
+		})
+		return
+	}
+
 	// 获取视频封面url
 	coverUrl, errC := operate.Preview(&driverAccount, videoUrl)
-	if errV != nil && errC != nil {
+	if errC != nil {
 		// 注意：状态码 0成功 其他值失败
 		context.JSON(http.StatusOK, response.Response{
 			StatusCode: 2,
-			StatusMsg:  fmt.Sprintf("上传失败: %v, %v", errV, errC),
+			StatusMsg:  fmt.Sprintf("封面获取失败: %v", errV, errC),
 		})
 		return
 	}
 
 	// 执行上传数据写入数据库, TODO 如果这里失败上传需要通知存储器删除视频 确保不存在数据"孤岛"
-	videoId, err := dao.PublishActionDao(user, videoUrl, coverUrl, context.Param("title"))
+	videoId, err := dao.PublishActionDao(user, videoUrl, coverUrl, context.Query("title"))
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, response.Response{StatusCode: 3, StatusMsg: err.Error()})
 		return

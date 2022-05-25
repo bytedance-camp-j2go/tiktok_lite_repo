@@ -23,6 +23,7 @@ func getUploadToken(account *model.DriverAccount) string {
 	// 从缓存获得 Token
 	exist, err := util.ExistKey(redisTokenKey)
 	if err != nil || !exist {
+		zap.L().Error("get token err!! will reSign", zap.Error(err))
 		return signToken(account)
 	}
 	token, err := util.GetStringFromRedis(redisTokenKey)
@@ -30,6 +31,7 @@ func getUploadToken(account *model.DriverAccount) string {
 	if err != nil {
 		global.Logf.Errorf("get token error >> %q\n", err)
 	}
+	zap.L().Debug("token >> ", zap.String("cache", token))
 	return token
 }
 
