@@ -16,8 +16,7 @@ func main() {
 	r.Use(middleware.JWTAuth())
 	// 初始化路由
 	bootstrap.InitRouter(r)
-	// 初始化数据库
-	bootstrap.InitDB()
+
 	err := r.Run(fmt.Sprintf(":%d", global.Conf.Port))
 	if err != nil {
 		global.Logf.Errorf("serve run error >> %s\n", err.Error())

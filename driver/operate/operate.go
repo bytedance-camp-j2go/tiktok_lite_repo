@@ -27,3 +27,11 @@ func Upload(account *model.DriverAccount, stream model.FileStream) (string, erro
 	}
 	return driver.Upload(stream, account)
 }
+
+func Preview(account *model.DriverAccount, url string) (string, error) {
+	driver, ok := base.GetDriver(account.Type)
+	if !ok {
+		return "", base.ErrNotSupport
+	}
+	return driver.Preview(url)
+}
