@@ -71,7 +71,7 @@ func calNextTime(videos []model.Video) int64 {
 		return util.TimeNowInt64()
 	}
 	lastVideo := videos[n-1]
-	return lastVideo.UpdatedAt.Unix()
+	return lastVideo.UpdatedAt.UnixMilli()
 }
 
 // TODO
