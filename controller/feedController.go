@@ -25,9 +25,9 @@ const (
 func Feed(ctx *gin.Context) {
 	timeStr := ctx.Query("latest_time")
 	start := ParsingTimestampStr(timeStr)
-
+	user := *CtxUser(ctx)
 	// 根据时间戳, 返回 list
-	feedProcess(ctx, start)
+	feedProcess(ctx, start, user)
 
 	// 可以做的：记录用户数据....
 
@@ -35,8 +35,7 @@ func Feed(ctx *gin.Context) {
 
 // 处理数据
 //
-func feedProcess(ctx *gin.Context, start time.Time) {
-	// TODO do something
+func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 	// 需要计算 start 在 set 中的排名, 决定使用二分查找
 	// 找到比 start 大的第一个元素的排名, 然后返回 start + offset 个视频信息
 	max := strconv.FormatInt(start.UnixMilli(), 10)
@@ -55,7 +54,7 @@ func feedProcess(ctx *gin.Context, start time.Time) {
 		return
 	}
 
-	videos := videoProcess(videoIdList)
+	videos := videoProcess(videoIdList, user.Id)
 
 	ctx.JSON(http.StatusOK, response.FeedResponse{
 		StatusCode: 0,
@@ -65,7 +64,7 @@ func feedProcess(ctx *gin.Context, start time.Time) {
 
 }
 
-func calNextTime(videos []model.Video) int64 {
+func calNextTime(videos []response.Video) int64 {
 	n := len(videos)
 	if n == 0 {
 		return util.TimeNowInt64()
@@ -74,14 +73,28 @@ func calNextTime(videos []model.Video) int64 {
 	return lastVideo.UpdatedAt.UnixMilli()
 }
 
-// TODO
-func videoProcess(videoIds []int64) []model.Video {
+// 获取 video 信息并封装用户信息
+func videoProcess(videoIds []int64, uid int64) []response.Video {
 	videos, err := dao.VideoQueryList(videoIds)
 	if err != nil {
 		zap.L().Error("获取视频信息失败!!", zap.Error(err))
 		return nil
 	}
-	return videos
+
+	res := make([]response.Video, 0, len(videos))
+
+	// 不在 for 循环内声明变量
+	var author response.User
+	for _, video := range videos {
+		author, err = response.NewUser(video.UserId, uid)
+		if err != nil {
+			zap.L().Error("get UserInfo", zap.Error(err))
+			res = append(res, response.Video{Video: video})
+			continue
+		}
+		res = append(res, response.Video{Video: video, Author: author})
+	}
+	return res
 }
 
 // ParsingTimestampStr 解析时间戳字符串

@@ -10,3 +10,8 @@ const (
 	_
 	OptServerError
 )
+
+var (
+	// UserError 通过两个 id 计算如果错误返回这个
+	UserError = User{}
+)

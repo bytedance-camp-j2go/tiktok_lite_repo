@@ -12,7 +12,7 @@ import (
 func UserInfoById(userId int64) (model.User, error) {
 	db := global.DB
 	user := model.User{}
-	err := db.Where("id=?", userId).Find(&user).Error
+	err := db.Where("id = ?", userId).Find(&user).Error
 	if err != nil {
 		return user, err
 	}
@@ -23,7 +23,7 @@ func UserInfoById(userId int64) (model.User, error) {
 func UserLogin(username string) (model.User, error) {
 	db := global.DB
 	user := model.User{}
-	err := db.Where("username=?", username).Find(&user).Error
+	err := db.Where("username = ?", username).Find(&user).Error
 	// 说明为空
 	if user == (model.User{}) {
 		return user, err

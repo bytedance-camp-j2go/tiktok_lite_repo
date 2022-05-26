@@ -28,15 +28,13 @@ func UserInfoOther(context *gin.Context) {
 	publisher, _ := dao.UserInfoById(publishId)
 	// 查询用户是否已经关注这个视频发布者
 	exists, _ := dao.UserFollower(user.(model.User).Id, publishId)
+
 	// 构建响应对象
 	userResp := response.UserResponse{
 		Response: response.Response{StatusCode: 200, StatusMsg: "成功"},
 		User: response.User{
-			Id:            publishId,
-			Name:          publisher.Name,
-			FollowCount:   publisher.FollowCount,
-			FollowerCount: publisher.FollowerCount,
-			IsFollow:      exists,
+			User:     publisher,
+			IsFollow: exists,
 		},
 	}
 	context.JSON(http.StatusOK, userResp)
@@ -45,14 +43,17 @@ func UserInfoOther(context *gin.Context) {
 // UserInfo 获取当前登录用户的信息
 func UserInfo(context *gin.Context) {
 	// 通过全局 Key 获取当前用户
-	user, _ := context.Get(global.CtxUserKey)
+	// user, _ := context.Get(global.CtxUserKey)
+	u := CtxUser(context)
+	if u == DefUser {
+		context.JSON(http.StatusForbidden, response.BaseInputError("Token invalid!!"))
+		return
+	}
+
 	// 封装用户信息
 	userResp := response.User{
-		Id:            user.(model.User).Id,
-		Name:          user.(model.User).Name,
-		FollowCount:   user.(model.User).FollowerCount,
-		FollowerCount: user.(model.User).FollowerCount,
-		IsFollow:      true, // 由于这里是用户在主页看到自己信息，所以是默认关注自己的
+		User:     *u,
+		IsFollow: true, // 由于这里是用户在主页看到自己信息，所以是默认关注自己的
 	}
 	context.JSON(http.StatusOK, response.UserResponse{
 		Response: response.Response{StatusCode: 0, StatusMsg: "成功"},

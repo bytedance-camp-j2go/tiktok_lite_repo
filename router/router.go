@@ -6,5 +6,6 @@ import (
 )
 
 func Feed(r *gin.RouterGroup) {
-	r.GET("/feed/", controller.Feed)
+	// r.GET("/feed/", controller.Feed)
+	r.GET("/feed", controller.Feed)
 }

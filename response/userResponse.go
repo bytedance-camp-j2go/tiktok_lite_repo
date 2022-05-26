@@ -1,12 +1,39 @@
 package response
 
+import (
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+)
+
 // User 返回用户信息中的User对象
 type User struct {
-	Id            int64  `json:"id"`             // 视频发布者id
-	Name          string `json:"name"`           // 视频发布者昵称
-	FollowCount   int64  `json:"follow_count"`   // 视频发布者关注数量
-	FollowerCount int64  `json:"follower_count"` // 视频发布者粉丝数量
-	IsFollow      bool   `json:"is_follow"`      // 用户是否关注这个视频发布者
+	// Id            int64  `json:"id"`             // 视频发布者id
+	// Name          string `json:"name"`           // 视频发布者昵称
+	// FollowCount   int64  `json:"follow_count"`   // 视频发布者关注数量
+	// FollowerCount int64  `json:"follower_count"` // 视频发布者粉丝数量
+	model.User
+	IsFollow bool `json:"is_follow"` // 用户是否关注这个视频发布者
+}
+
+// NewUser 查询 User 并计算是否已关注
+// uid = 被查询用户 id, u2id = 查询发起者 id
+func NewUser(uid, u2id int64) (User, error) {
+	if id, err := dao.UserInfoById(uid); err == nil {
+		return User{
+			id,
+			isFollow(uid, u2id),
+		}, err
+	}
+
+	return UserError, nil
+}
+
+func isFollow(uid, u2id int64) bool {
+	if u2id == -1 {
+		return false
+	}
+	// todo
+	return false
 }
 
 // UserResponse 返回用户信息
