@@ -23,4 +23,13 @@ func InitRouter(r *gin.Engine) {
 
 	// 视频流接口
 	router.Feed(dy)
+
+	favorite := dy.Group("/favorite")
+	router.FavoriteRouterGroup(favorite)
+
+	relation := dy.Group("/relation")
+	router.RelationRouterGroup(relation)
+
+	// TODO SOME IMPL
+
 }
