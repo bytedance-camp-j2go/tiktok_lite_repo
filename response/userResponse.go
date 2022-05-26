@@ -15,16 +15,27 @@ type UserResponse struct {
 	User User `json:"user"`
 }
 
-// UserLoginResponse 用户登录成功返回响应
-type UserLoginResponse struct {
+// UserTokenResponse 用户登录成功返回响应
+// 登陆、注册成功都是返回 uid + token
+// 索性合并两种 Resp，
+// 可以更方便的封装返回方法
+type UserTokenResponse struct {
 	Response
 	UserId int64  `json:"user_id"` // 用户id
 	Token  string `json:"token"`   // 鉴权token
 }
 
-// UserRegisterResponse 用户注册成功返回响应
-type UserRegisterResponse struct {
-	Response
-	UserId int64  `json:"user_id"` // 用户id
-	Token  string `json:"token"`   // 鉴权token
+func UserTokenSuccess(uid int64, token, msg string) UserTokenResponse {
+	return UserTokenResponse{BaseSuccess(msg), uid, token}
 }
+
+// // UserRegisterResponse 用户注册成功返回响应
+// type UserRegisterResponse struct {
+// 	Response
+// 	UserId int64  `json:"user_id"` // 用户id
+// 	Token  string `json:"token"`   // 鉴权token
+// }
+//
+// func UserRegisterSuccess(uid int64, token, msg string) UserRegisterResponse {
+// 	return UserRegisterResponse{BaseSuccess(msg), uid, token}
+// }

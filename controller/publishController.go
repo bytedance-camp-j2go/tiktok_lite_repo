@@ -28,7 +28,7 @@ const (
 // 3 上传索引保存失败, 上传操作无效
 func PublishAction(context *gin.Context) {
 	// 从上下文获取用户信息
-	ctxVal, _ := context.Get(global.UserName)
+	ctxVal, _ := context.Get(global.CtxUserKey)
 
 	user, ok := ctxVal.(model.User)
 	if !ok {
@@ -117,7 +117,7 @@ func ConfusionName(o string) string {
 func PublishList(context *gin.Context) {
 	// 获取用户信息
 	var a any
-	a, _ = context.Get(global.UserName)
+	a, _ = context.Get(global.CtxUserKey)
 	user := a.(model.User)
 	// 封装用户响应信息
 	userResp := response.User{

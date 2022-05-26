@@ -43,7 +43,7 @@ func JWTAuth() gin.HandlerFunc {
 		}
 
 		// 将claim中的user信息存在context中
-		c.Set(global.UserName, claim.User)
+		c.Set(global.CtxUserKey, claim.User)
 
 		// 这里执行路由 HandlerFunc
 		c.Next()
