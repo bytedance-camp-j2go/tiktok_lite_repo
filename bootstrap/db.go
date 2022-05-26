@@ -19,7 +19,7 @@ func InitDB() *gorm.DB {
 	mysqlInfo := serverConfig.Mysql
 	// 获取dsn
 	// dsn := "root:drldrl521521@tcp(localhost:3306)/ssmbuild?charset=utf8&parseTime=True&loc=Local"
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
 		mysqlInfo.Name,
 		mysqlInfo.Password,
 		mysqlInfo.Host,

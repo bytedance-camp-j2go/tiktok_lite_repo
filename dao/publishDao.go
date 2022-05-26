@@ -10,9 +10,10 @@ import (
 
 // PublishActionDao 视频投稿，将视频信息持久化到数据库中
 func PublishActionDao(user model.User, playUrl string, coverUrl string, title string) (int64, error) {
+	now := time.Now()
 	video := &model.Video{
 		VideoId:       util.UniqueID(),
-		Model:         gorm.Model{CreatedAt: time.Now(), UpdatedAt: time.Now()},
+		Model:         gorm.Model{CreatedAt: now, UpdatedAt: now},
 		UserId:        user.Id,
 		PlayUrl:       playUrl,
 		CoverUrl:      coverUrl,
