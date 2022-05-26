@@ -20,7 +20,6 @@ func Save2Redis(key string, v []byte, expires time.Duration) {
 		return
 	}
 	zap.L().Debug("save2redis", zap.String("say", result))
-
 }
 
 func ExistKey(key string) (bool, error) {

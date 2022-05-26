@@ -32,7 +32,7 @@ func UserInfoOther(context *gin.Context) {
 	userResp := response.UserResponse{
 		Response: response.Response{StatusCode: 200, StatusMsg: "成功"},
 		User: response.User{
-			Id:            publishId,
+			Id:            publisher.UserId,
 			Name:          publisher.Name,
 			FollowCount:   publisher.FollowCount,
 			FollowerCount: publisher.FollowerCount,
@@ -63,8 +63,6 @@ func UserInfo(context *gin.Context) {
 // UserRegister 用户注册
 func UserRegister(context *gin.Context) {
 	// 获取账号密码
-	// username := context.PostForm("username")
-	// password := context.PostForm("password")
 	username := context.Query("username")
 	password := context.Query("password")
 	// 插入数据

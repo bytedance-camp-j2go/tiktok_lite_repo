@@ -12,7 +12,7 @@ func PublishActionDao(user model.User, playUrl string, coverUrl string, title st
 	db := global.DB
 	video := model.Video{
 		Model:         gorm.Model{CreatedAt: time.Now(), UpdatedAt: time.Now()},
-		UserId:        user.Id,
+		UserId:        user.UserId,
 		PlayUrl:       playUrl,
 		CoverUrl:      coverUrl,
 		FavoriteCount: 0,
@@ -46,5 +46,15 @@ func UserFavorite(userId int64) ([]int64, error) {
 		return videosId, err
 	}
 	return videosId, nil
+}
 
+// GetVideoByVideoId 根据videoId获取video信息
+func GetVideoByVideoId(videoId int64) (model.Video, error) {
+	db := global.DB
+	var video model.Video
+	err := db.Where("video_id=?", videoId).Find(&video).Error
+	if err != nil {
+		return video, err
+	}
+	return video, nil
 }

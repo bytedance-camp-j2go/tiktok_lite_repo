@@ -81,24 +81,31 @@ func fileName(o string) string {
 func PublishList(context *gin.Context) {
 	// 获取用户信息
 	var a any
+	a = context.Query("user_id")
+	publishId := a.(int64)
+	// 通过user_id查询用户信息，这里参数中的user_id其实就是发布者的id
+	publisher, _ := dao.UserInfoById(publishId)
+	// 获取登录用户信息
 	a, _ = context.Get(global.UserName)
 	user := a.(model.User)
+	// 判断user是否关注了publisher
+	isFollow, _ := dao.UserFollower(user.UserId, publisher.UserId)
 	// 封装用户响应信息
 	userResp := response.User{
-		Id:            user.Id,
-		Name:          user.Name,
-		FollowCount:   user.FollowCount,
-		FollowerCount: user.FollowerCount,
-		IsFollow:      true, // 注意；这里是用户看自己的主页，所以肯定是关注了自己的
+		Id:            publisher.UserId,
+		Name:          publisher.Name,
+		FollowCount:   publisher.FollowCount,
+		FollowerCount: publisher.FollowerCount,
+		IsFollow:      isFollow,
 	}
-	// 查询用户发布的视频列表
-	videos, err := dao.PublishList(user.Id)
+	// 查询发布者的视频列表
+	videos, err := dao.PublishList(publisher.UserId)
 	if err != nil {
 		context.JSON(http.StatusOK, response.Response{StatusCode: 1, StatusMsg: "查询失败"})
 		return
 	}
-	// 查询用户点赞过自己的视频
-	videosId, _ := dao.UserFavorite(user.Id)
+	// 查询登录用户点赞过发布者的视频
+	videosId, _ := dao.UserFavorite(user.UserId)
 	// 将videosId转换为map
 	videosIdMap := util.ArrayIntConvertMap(videosId)
 	size := len(videos)
@@ -106,7 +113,7 @@ func PublishList(context *gin.Context) {
 	// var videosResp [size]response.VideoList
 	// 创建响应对象
 	for i, v := range videos {
-		videosResp[i].Id = int64(v.Model.ID)
+		videosResp[i].Id = v.VideoId
 		videosResp[i].Author = userResp // 用户信息
 		videosResp[i].PlayUrl = v.PlayUrl
 		videosResp[i].CoveUrl = v.CoverUrl
@@ -115,7 +122,6 @@ func PublishList(context *gin.Context) {
 		videosResp[i].CommentCount = v.CommentCount
 		_, exists := videosIdMap[int64(v.ID)] // 判断这个视频用户是否点赞过，点赞 true 未点赞 false
 		videosResp[i].IsFavorite = exists
-		videosResp[i].IsFavorite = true // 注意：这块需要判断用户对这个视频有没有点赞
 		videosResp[i].Title = v.Title
 	}
 	context.JSON(http.StatusOK, response.PublishListResponse{
