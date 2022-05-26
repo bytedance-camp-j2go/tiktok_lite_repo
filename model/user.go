@@ -26,6 +26,7 @@ func (User) getUserById(userId int64, publisherId int64) (response.User, error) 
 		return publisherResp, err
 	}
 	isFollower, _ := dao.UserFollower(userId, publisherId)
+	// 拼接publisherResp
 	publisherResp.User = publisher
 	publisherResp.IsFollow = isFollower
 	return publisherResp, nil
