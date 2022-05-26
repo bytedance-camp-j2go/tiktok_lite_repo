@@ -50,16 +50,28 @@ func feedProcess(ctx *gin.Context, start time.Time) {
 	videoIdList, err := util.ZSetRangeByScoreInt(global.VideoSeqSetKey, rangeBy)
 
 	if len(videoIdList) == 0 && err != nil {
-		ctx.JSON(http.StatusInternalServerError, response.Response{StatusCode: 1})
+		zap.L().Debug("get video list err!!", zap.Int("len", len(videoIdList)), zap.Error(err))
+		ctx.JSON(http.StatusInternalServerError, response.Response{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
 
+	videos := videoProcess(videoIdList)
+
 	ctx.JSON(http.StatusOK, response.FeedResponse{
 		StatusCode: 0,
-		VideoList:  videoProcess(videoIdList),
-		NextTime:   0,
+		VideoList:  videos,
+		NextTime:   calNextTime(videos),
 	})
 
+}
+
+func calNextTime(videos []model.Video) int64 {
+	n := len(videos)
+	if n == 0 {
+		return util.TimeNowInt64()
+	}
+	lastVideo := videos[n-1]
+	return lastVideo.UpdatedAt.Unix()
 }
 
 // TODO

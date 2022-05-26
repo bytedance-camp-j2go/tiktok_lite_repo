@@ -25,7 +25,7 @@ func FavoriteAction(c *gin.Context) {
 			Score:  float64(time.Now().Unix()),
 			Member: videoId,
 		}
-		//维护一个排序集合，key为favorite_set::userId，value 为videoId，按照时间顺序排序
+		// 维护一个排序集合，key为favorite_set::userId，value 为videoId，按照时间顺序排序
 		err := global.RedisDB.ZAdd(c, "favorite_set::"+userId, zset).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
@@ -34,8 +34,8 @@ func FavoriteAction(c *gin.Context) {
 			return
 		}
 
-		//维护一个set，key为favorite_count_set::videoId，value为用户id
-		//用来保存这个视频下面哪些用户点赞
+		// 维护一个set，key为favorite_count_set::videoId，value为用户id
+		// 用来保存这个视频下面哪些用户点赞
 		err = global.RedisDB.SAdd(c, "favorite_count_set::"+videoId, userId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
@@ -48,7 +48,7 @@ func FavoriteAction(c *gin.Context) {
 			Response: response.Response{StatusCode: 0, StatusMsg: "点赞成功"},
 		})
 	case "2":
-		//从zset中删除取消点赞的视频
+		// 从zset中删除取消点赞的视频
 		err := global.RedisDB.ZRem(c, "favorite_set::"+userId, videoId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
@@ -57,7 +57,7 @@ func FavoriteAction(c *gin.Context) {
 			return
 		}
 
-		//取消点赞，从favorite_count_set::videoId删除该用户
+		// 取消点赞，从favorite_count_set::videoId删除该用户
 		err = global.RedisDB.SRem(c, "favorite_count_set::"+videoId, userId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
@@ -101,7 +101,7 @@ func FavoriteList(c *gin.Context) {
 			VideoId:       videoId,
 			UserId:        videoId,
 			PlayUrl:       "www.baidu.com",
-			CoveUrl:       "www.taobao.com",
+			CoverUrl:      "www.taobao.com",
 			FavoriteCount: 666,
 			CommentCount:  222,
 			Title:         res[i],
@@ -115,7 +115,7 @@ func FavoriteList(c *gin.Context) {
 
 }
 
-//提供方法：根据视频id查询出视频点赞数
+// 提供方法：根据视频id查询出视频点赞数
 func GetFavoriteCountByVideoId(c *gin.Context, videoId string) int64 {
 	result, err := global.RedisDB.SCard(c, "favorite_count_set::"+videoId).Result()
 	if err != nil {
@@ -124,7 +124,7 @@ func GetFavoriteCountByVideoId(c *gin.Context, videoId string) int64 {
 	return result
 }
 
-//根据视频id查询是否已经点赞过
+// 根据视频id查询是否已经点赞过
 func IsFavorite(c *gin.Context, videoId string, userId string) bool {
 	result, err := global.RedisDB.SIsMember(c, "favorite_count_set::"+videoId, userId).Result()
 	if err != nil {

@@ -18,7 +18,7 @@ func RelationAction(c *gin.Context) {
 	actionType := c.Query("action_type")
 
 	switch actionType {
-	//关注操作
+	// 关注操作
 	case "1":
 		err := global.RedisDB.SAdd(c, "follow_list::"+userId, toUserId).Err()
 		if err != nil {
@@ -37,7 +37,7 @@ func RelationAction(c *gin.Context) {
 		c.JSON(http.StatusOK, response.RelationActionResponse{
 			Response: response.Response{StatusCode: 0, StatusMsg: "关注成功"},
 		})
-	//取消关注
+	// 取消关注
 	case "2":
 		err := global.RedisDB.SRem(c, "follow_list::"+userId, toUserId).Err()
 		if err != nil {
@@ -56,7 +56,7 @@ func RelationAction(c *gin.Context) {
 		c.JSON(http.StatusOK, response.RelationActionResponse{
 			Response: response.Response{StatusCode: 0, StatusMsg: "取消关注成功"},
 		})
-	//请求错误
+	// 请求错误
 	default:
 		c.JSON(http.StatusBadRequest, response.RelationActionResponse{
 			Response: response.Response{StatusCode: -1, StatusMsg: "行为异常"},
@@ -81,7 +81,7 @@ func RelationFollowList(c *gin.Context) {
 
 	for i := 0; i < len(result); i++ {
 		followId, _ := strconv.ParseInt(result[i], 10, 64)
-		//todo 根据用户id查找用户方法
+		// todo 根据用户id查找用户方法
 		list[i] = model.User{
 			Id:            followId,
 			UserName:      "liyu" + result[i],
@@ -89,7 +89,7 @@ func RelationFollowList(c *gin.Context) {
 			Name:          "liyu" + result[i],
 			FollowCount:   100,
 			FollowerCount: 100,
-			IsFollow:      true,
+			// IsFollow:      true,
 		}
 	}
 
@@ -124,7 +124,7 @@ func RelationFollowerList(c *gin.Context) {
 			Name:          "liyu" + result[i],
 			FollowCount:   100,
 			FollowerCount: 100,
-			IsFollow:      true,
+			// IsFollow:      true,
 		}
 	}
 
@@ -134,7 +134,7 @@ func RelationFollowerList(c *gin.Context) {
 	})
 }
 
-//方法：判断对方是否是我的关注
+// 方法：判断对方是否是我的关注
 func IsFollow(c *gin.Context, userId string, toUserId string) bool {
 	result, err := global.RedisDB.SIsMember(c, "follow_list::"+userId, toUserId).Result()
 	if err != nil {
@@ -143,7 +143,7 @@ func IsFollow(c *gin.Context, userId string, toUserId string) bool {
 	return result
 }
 
-//方法：查询我的关注数
+// 方法：查询我的关注数
 func QueryFollowCount(c *gin.Context, userId string) int64 {
 	result, err := global.RedisDB.SCard(c, "follow_list::"+userId).Result()
 	if err != nil {
@@ -152,7 +152,7 @@ func QueryFollowCount(c *gin.Context, userId string) int64 {
 	return result
 }
 
-//方法：判断对方是否关注了我
+// 方法：判断对方是否关注了我
 func IsFollower(c *gin.Context, userId string, toUserId string) bool {
 	result, err := global.RedisDB.SIsMember(c, "follower_list::"+userId, toUserId).Result()
 	if err != nil {
@@ -161,7 +161,7 @@ func IsFollower(c *gin.Context, userId string, toUserId string) bool {
 	return result
 }
 
-//方法：查询我的粉丝数
+// 方法：查询我的粉丝数
 func QueryFollowerCount(c *gin.Context, userId string) int64 {
 	result, err := global.RedisDB.SCard(c, "follower_list::"+userId).Result()
 	if err != nil {
