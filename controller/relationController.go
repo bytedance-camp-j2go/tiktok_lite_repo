@@ -1,8 +1,8 @@
 package controller
 
 import (
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -77,19 +77,17 @@ func RelationFollowList(c *gin.Context) {
 		})
 		return
 	}
-	list := make([]model.User, len(result))
+	list := make([]response.RelationUser, len(result))
 
 	for i := 0; i < len(result); i++ {
 		followId, _ := strconv.ParseInt(result[i], 10, 64)
-		//todo 根据用户id查找用户方法
-		list[i] = model.User{
-			Id:            followId,
-			UserName:      "liyu" + result[i],
-			PassWord:      "123" + result[i],
-			Name:          "liyu" + result[i],
-			FollowCount:   100,
-			FollowerCount: 100,
-			IsFollow:      true,
+		modelUser, _ := dao.UserInfoById(followId)
+		list[i] = response.RelationUser{
+			Id:            modelUser.Id,
+			Name:          modelUser.Name,
+			FollowCount:   dao.QueryFollowCount(c, result[i]),
+			FollowerCount: dao.QueryFollowerCount(c, result[i]),
+			IsFollow:      dao.IsFollow(c, userId, result[i]),
 		}
 	}
 
@@ -112,19 +110,17 @@ func RelationFollowerList(c *gin.Context) {
 		})
 		return
 	}
-	list := make([]model.User, len(result))
+	list := make([]response.RelationUser, len(result))
 
 	for i := 0; i < len(result); i++ {
-		followerId, _ := strconv.ParseInt(result[i], 10, 64)
-		// todo 根据用户id查找用户方法，这里暂时写死
-		list[i] = model.User{
-			Id:            followerId,
-			UserName:      "liyu" + result[i],
-			PassWord:      "123" + result[i],
-			Name:          "liyu" + result[i],
-			FollowCount:   100,
-			FollowerCount: 100,
-			IsFollow:      true,
+		followId, _ := strconv.ParseInt(result[i], 10, 64)
+		modelUser, _ := dao.UserInfoById(followId)
+		list[i] = response.RelationUser{
+			Id:            modelUser.Id,
+			Name:          modelUser.Name,
+			FollowCount:   dao.QueryFollowCount(c, result[i]),
+			FollowerCount: dao.QueryFollowerCount(c, result[i]),
+			IsFollow:      dao.IsFollow(c, userId, result[i]),
 		}
 	}
 
@@ -132,40 +128,4 @@ func RelationFollowerList(c *gin.Context) {
 		Response: response.Response{StatusCode: 0, StatusMsg: "获取用户粉丝列表成功"},
 		UserList: list,
 	})
-}
-
-//方法：判断对方是否是我的关注
-func IsFollow(c *gin.Context, userId string, toUserId string) bool {
-	result, err := global.RedisDB.SIsMember(c, "follow_list::"+userId, toUserId).Result()
-	if err != nil {
-		return false
-	}
-	return result
-}
-
-//方法：查询我的关注数
-func QueryFollowCount(c *gin.Context, userId string) int64 {
-	result, err := global.RedisDB.SCard(c, "follow_list::"+userId).Result()
-	if err != nil {
-		return 0
-	}
-	return result
-}
-
-//方法：判断对方是否关注了我
-func IsFollower(c *gin.Context, userId string, toUserId string) bool {
-	result, err := global.RedisDB.SIsMember(c, "follower_list::"+userId, toUserId).Result()
-	if err != nil {
-		return false
-	}
-	return result
-}
-
-//方法：查询我的粉丝数
-func QueryFollowerCount(c *gin.Context, userId string) int64 {
-	result, err := global.RedisDB.SCard(c, "follower_list::"+userId).Result()
-	if err != nil {
-		return 0
-	}
-	return result
 }

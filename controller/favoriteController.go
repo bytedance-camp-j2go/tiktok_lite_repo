@@ -1,8 +1,8 @@
 package controller
 
 import (
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -91,20 +91,33 @@ func FavoriteList(c *gin.Context) {
 		})
 		return
 	}
-
-	list := make([]model.Video, len(res))
-
+	VideoIdInt64 := make([]int64, len(res))
 	for i := 0; i < len(res); i++ {
-		// todo 这里需要根据videoId获取视频对象
-		videoId, _ := strconv.ParseInt(res[i], 10, 64)
-		list[i] = model.Video{
-			VideoId:       videoId,
-			UserId:        videoId,
-			PlayUrl:       "www.baidu.com",
-			CoveUrl:       "www.taobao.com",
-			FavoriteCount: 666,
-			CommentCount:  222,
-			Title:         res[i],
+		VideoIdInt64[i], _ = strconv.ParseInt(res[i], 10, 64)
+	}
+	//获取视频对象数组
+	queryList, err := dao.VideoQueryList(VideoIdInt64)
+
+	list := make([]response.FavoriteVideo, len(res))
+	//封装视频数组
+	for i := 0; i < len(res); i++ {
+		userModel, _ := dao.UserInfoById(queryList[i].UserId)
+		videoUser := strconv.FormatInt(queryList[i].UserId, 10)
+		list[i] = response.FavoriteVideo{
+			VideoId: queryList[i].VideoId,
+			User: response.FavoriteUser{
+				Id:            userModel.Id,
+				Name:          userModel.Name,
+				FollowerCount: userModel.FollowerCount,
+				FollowCount:   userModel.FollowCount,
+				IsFollow:      dao.IsFollow(c, userId, videoUser),
+			},
+			PlayUrl:       queryList[i].PlayUrl,
+			CoverUrl:      queryList[i].CoverUrl,
+			FavoriteCount: dao.GetFavoriteCountByVideoId(c, res[i]),
+			CommentCount:  queryList[i].CommentCount,
+			IsFavorite:    dao.IsFavorite(c, strconv.FormatInt(queryList[i].VideoId, 10), userId),
+			Title:         queryList[i].Title,
 		}
 	}
 
@@ -113,22 +126,4 @@ func FavoriteList(c *gin.Context) {
 		VideoList: list,
 	})
 
-}
-
-//提供方法：根据视频id查询出视频点赞数
-func GetFavoriteCountByVideoId(c *gin.Context, videoId string) int64 {
-	result, err := global.RedisDB.SCard(c, "favorite_count_set::"+videoId).Result()
-	if err != nil {
-		return 0
-	}
-	return result
-}
-
-//根据视频id查询是否已经点赞过
-func IsFavorite(c *gin.Context, videoId string, userId string) bool {
-	result, err := global.RedisDB.SIsMember(c, "favorite_count_set::"+videoId, userId).Result()
-	if err != nil {
-		return false
-	}
-	return result
 }

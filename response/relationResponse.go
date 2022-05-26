@@ -1,19 +1,23 @@
 package response
 
-import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
-)
-
 type RelationActionResponse struct {
 	Response
 }
 
 type RelationFollowListResponse struct {
 	Response
-	UserList []model.User `json:"user_list"`
+	UserList []RelationUser `json:"user_list"`
 }
 
 type RelationFollowerListResponse struct {
 	Response
-	UserList []model.User `json:"user_list"`
+	UserList []RelationUser `json:"user_list"`
+}
+
+type RelationUser struct {
+	Id            int64  `json:"id"`             // 用户id
+	Name          string `json:"name"`           // 用户昵称
+	FollowCount   int64  `json:"follow_count"`   // 用户关注人数
+	FollowerCount int64  `json:"follower_count"` // 用户粉丝数量
+	IsFollow      bool   `json:"is_follow"`      //对方是否关注
 }
