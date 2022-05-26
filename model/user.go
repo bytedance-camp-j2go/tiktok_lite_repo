@@ -16,7 +16,7 @@ type User struct {
 	FollowerCount int64  `json:"follower_count" gorm:"column:follower_count"`       // 用户粉丝数量
 }
 
-// 通过userId查询用户信息
+// 通过userId和publisherId查询publisher信息
 func (User) getUserById(userId int64, publisherId int64) (response.User, error) {
 	db := global.DB
 	var publisher User
