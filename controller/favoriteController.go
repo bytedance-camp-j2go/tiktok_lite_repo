@@ -110,13 +110,13 @@ func FavoriteList(c *gin.Context) {
 				Name:          userModel.Name,
 				FollowerCount: userModel.FollowerCount,
 				FollowCount:   userModel.FollowCount,
-				IsFollow:      dao.IsFollow(c, userId, videoUser),
+				IsFollow:      dao.IsFollow(userId, videoUser),
 			},
 			PlayUrl:       queryList[i].PlayUrl,
 			CoverUrl:      queryList[i].CoverUrl,
-			FavoriteCount: dao.GetFavoriteCountByVideoId(c, res[i]),
+			FavoriteCount: dao.GetFavoriteCountByVideoId(res[i]),
 			CommentCount:  queryList[i].CommentCount,
-			IsFavorite:    dao.IsFavorite(c, strconv.FormatInt(queryList[i].VideoId, 10), userId),
+			IsFavorite:    dao.IsFavorite(strconv.FormatInt(queryList[i].VideoId, 10), userId),
 			Title:         queryList[i].Title,
 		}
 	}

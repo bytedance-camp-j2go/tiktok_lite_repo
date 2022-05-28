@@ -85,9 +85,9 @@ func RelationFollowList(c *gin.Context) {
 		list[i] = response.RelationUser{
 			Id:            modelUser.Id,
 			Name:          modelUser.Name,
-			FollowCount:   dao.QueryFollowCount(c, result[i]),
-			FollowerCount: dao.QueryFollowerCount(c, result[i]),
-			IsFollow:      dao.IsFollow(c, userId, result[i]),
+			FollowCount:   dao.QueryFollowCount(result[i]),
+			FollowerCount: dao.QueryFollowerCount(result[i]),
+			IsFollow:      dao.IsFollow(userId, result[i]),
 		}
 	}
 
@@ -118,9 +118,9 @@ func RelationFollowerList(c *gin.Context) {
 		list[i] = response.RelationUser{
 			Id:            modelUser.Id,
 			Name:          modelUser.Name,
-			FollowCount:   dao.QueryFollowCount(c, result[i]),
-			FollowerCount: dao.QueryFollowerCount(c, result[i]),
-			IsFollow:      dao.IsFollow(c, userId, result[i]),
+			FollowCount:   dao.QueryFollowCount(result[i]),
+			FollowerCount: dao.QueryFollowerCount(result[i]),
+			IsFollow:      dao.IsFollow(userId, result[i]),
 		}
 	}
 
