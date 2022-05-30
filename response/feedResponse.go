@@ -13,5 +13,6 @@ type FeedResponse struct {
 
 type Video struct {
 	model.Video
-	Author User `json:"author,omitempty"`
+	Author     User `json:"author,omitempty"`
+	IsFavorite bool `json:"is_favorite"`
 }

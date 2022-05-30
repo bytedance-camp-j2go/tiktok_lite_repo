@@ -60,7 +60,7 @@ func isFollow(uid, u2id int64) bool {
 	if u2id == -1 {
 		return false
 	}
-	// todo
+
 	return false
 }
 
