@@ -2,10 +2,11 @@ package dao
 
 import (
 	"errors"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"gorm.io/gorm"
-	"tiktok-lite/global"
-	"tiktok-lite/model"
-	"tiktok-lite/util"
 )
 
 // UserInfoById 根据userId获取用户信息
@@ -60,4 +61,20 @@ func UserFollower(userId int64, publisherId int64) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+// 通过userId和publisherId查询publisher信息
+func getUserById(userId int64, publisherId int64) (response.User, error) {
+	db := global.DB
+	var publisher model.User
+	var publisherResp response.User
+	err := db.Where("user_id=?", userId).Find(&publisher).Error
+	if publisher == (model.User{}) {
+		return publisherResp, err
+	}
+	isFollower, _ := UserFollower(userId, publisherId)
+	// 拼接publisherResp
+	publisherResp.User = publisher
+	publisherResp.IsFollow = isFollower
+	return publisherResp, nil
 }
