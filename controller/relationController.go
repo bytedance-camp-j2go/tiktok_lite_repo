@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,14 +14,21 @@ import (
 关注操作
 */
 func RelationAction(c *gin.Context) {
-	userId := c.Query("user_id")
+
+	// 获取用户信息
+	var a any
+	a, _ = c.Get(global.CtxUserKey)
+	user := a.(model.User)
+	userId := model.User(user).Id
+	userIdStr := strconv.FormatInt(userId, 10)
+
 	toUserId := c.Query("to_user_id")
 	actionType := c.Query("action_type")
 
 	switch actionType {
 	//关注操作
 	case "1":
-		err := global.RedisDB.SAdd(c, "follow_list::"+userId, toUserId).Err()
+		err := global.RedisDB.SAdd(c, "follow_list::"+userIdStr, toUserId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.RelationActionResponse{
 				Response: response.Response{StatusCode: -1, StatusMsg: "redis sadd出错"},
@@ -39,7 +47,7 @@ func RelationAction(c *gin.Context) {
 		})
 	//取消关注
 	case "2":
-		err := global.RedisDB.SRem(c, "follow_list::"+userId, toUserId).Err()
+		err := global.RedisDB.SRem(c, "follow_list::"+userIdStr, toUserId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.RelationActionResponse{
 				Response: response.Response{StatusCode: -1, StatusMsg: "redis sadd出错"},
@@ -69,8 +77,14 @@ func RelationAction(c *gin.Context) {
 用户关注列表
 */
 func RelationFollowList(c *gin.Context) {
-	userId := c.Query("user_id")
-	result, err := global.RedisDB.SMembers(c, "follow_list::"+userId).Result()
+	// 获取用户信息
+	var a any
+	a, _ = c.Get(global.CtxUserKey)
+	user := a.(model.User)
+	userId := model.User(user).Id
+	userIdStr := strconv.FormatInt(userId, 10)
+
+	result, err := global.RedisDB.SMembers(c, "follow_list::"+userIdStr).Result()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.RelationActionResponse{
 			Response: response.Response{StatusCode: -1, StatusMsg: "redis smember出错"},
@@ -87,7 +101,7 @@ func RelationFollowList(c *gin.Context) {
 			Name:          modelUser.Name,
 			FollowCount:   dao.QueryFollowCount(result[i]),
 			FollowerCount: dao.QueryFollowerCount(result[i]),
-			IsFollow:      dao.IsFollow(userId, result[i]),
+			IsFollow:      dao.IsFollow(userIdStr, result[i]),
 		}
 	}
 
@@ -102,8 +116,13 @@ func RelationFollowList(c *gin.Context) {
 用户粉丝列表
 */
 func RelationFollowerList(c *gin.Context) {
-	userId := c.Query("user_id")
-	result, err := global.RedisDB.SMembers(c, "follower_list::"+userId).Result()
+	// 获取用户信息
+	var a any
+	a, _ = c.Get(global.CtxUserKey)
+	user := a.(model.User)
+	userId := model.User(user).Id
+	userIdStr := strconv.FormatInt(userId, 10)
+	result, err := global.RedisDB.SMembers(c, "follower_list::"+userIdStr).Result()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.RelationActionResponse{
 			Response: response.Response{StatusCode: -1, StatusMsg: "redis smember出错"},
@@ -120,7 +139,7 @@ func RelationFollowerList(c *gin.Context) {
 			Name:          modelUser.Name,
 			FollowCount:   dao.QueryFollowCount(result[i]),
 			FollowerCount: dao.QueryFollowerCount(result[i]),
-			IsFollow:      dao.IsFollow(userId, result[i]),
+			IsFollow:      dao.IsFollow(userIdStr, result[i]),
 		}
 	}
 
