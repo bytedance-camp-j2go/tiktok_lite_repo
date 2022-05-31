@@ -19,7 +19,7 @@ import (
 
 // 文件前缀格式: uid/ConfusionName
 const (
-	fileSuffixFormat = "/test/%b/%s"
+	fileSuffixFormat = "/test/%d/%s"
 )
 
 // PublishAction 解释错误信息:
@@ -28,14 +28,22 @@ const (
 // 3 上传索引保存失败, 上传操作无效
 func PublishAction(context *gin.Context) {
 	// 从上下文获取用户信息
-	ctxVal, _ := context.Get(global.UserName)
+	// ctxVal, _ := context.Get(global.CtxUserKey)
+	//
+	// user, ok := ctxVal.(model.User)
+	// if !ok {
+	// 	zap.L().Error("user info err!")
+	// 	context.JSON(http.StatusBadRequest, response.Response{StatusCode: 2, StatusMsg: ""})
+	// 	return
+	// }
 
-	user, ok := ctxVal.(model.User)
-	if !ok {
+	u := CtxUser(context)
+	if u != DefUser {
 		zap.L().Error("user info err!")
 		context.JSON(http.StatusBadRequest, response.Response{StatusCode: 2, StatusMsg: ""})
 		return
 	}
+	user := *u
 
 	// 获取视频信息
 	data, err := context.FormFile("data")
@@ -85,8 +93,14 @@ func PublishAction(context *gin.Context) {
 		return
 	}
 
-	// 执行上传数据写入数据库, TODO 如果这里失败上传需要通知存储器删除视频 确保不存在数据"孤岛"
-	videoId, err := dao.PublishActionDao(user, videoUrl, coverUrl, context.Query("title"))
+	// 执行上传数据写入数据库,
+	// TODO 如果这里失败上传需要通知存储器删除视频 确保不存在数据"孤岛"
+	videoId, err := dao.PublishActionDao(
+		user,
+		videoUrl,
+		coverUrl,
+		postTitle(context),
+	)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, response.Response{StatusCode: 3, StatusMsg: err.Error()})
 		return
@@ -103,6 +117,15 @@ func PublishAction(context *gin.Context) {
 	context.JSON(http.StatusOK, response.Response{StatusCode: 0})
 }
 
+func postTitle(ctx *gin.Context) (title string) {
+
+	if title = ctx.PostForm("title"); title != "" {
+		return
+	}
+	title = "default video title"
+	return
+}
+
 // ConfusionName 用时间戳混淆时间戳
 func ConfusionName(o string) string {
 	fileExt := path.Ext(o)
@@ -117,15 +140,16 @@ func ConfusionName(o string) string {
 func PublishList(context *gin.Context) {
 	// 获取用户信息
 	var a any
-	a, _ = context.Get(global.UserName)
+	a, _ = context.Get(global.CtxUserKey)
 	user := a.(model.User)
 	// 封装用户响应信息
 	userResp := response.User{
-		Id:            user.Id,
-		Name:          user.Name,
-		FollowCount:   user.FollowCount,
-		FollowerCount: user.FollowerCount,
-		IsFollow:      true, // 注意；这里是用户看自己的主页，所以肯定是关注了自己的
+		// Id:            user.Id,
+		// Name:          user.Name,
+		// FollowCount:   user.FollowCount,
+		// FollowerCount: user.FollowerCount,
+		User:     user,
+		IsFollow: true, // 注意；这里是用户看自己的主页，所以肯定是关注了自己的
 	}
 	// 查询用户发布的视频列表
 	videos, err := dao.PublishList(user.Id)

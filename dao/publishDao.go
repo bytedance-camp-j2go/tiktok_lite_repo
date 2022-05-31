@@ -33,7 +33,7 @@ func PublishActionDao(user model.User, playUrl string, coverUrl string, title st
 func PublishList(userId int64) ([]model.Video, error) {
 	db := global.DB
 	var videos []model.Video
-	err := db.Where("user_id=?", userId).Find(&videos).Error
+	err := db.Where("user_id = ?", userId).Find(&videos).Error
 	if err != nil {
 		return videos, err
 	}

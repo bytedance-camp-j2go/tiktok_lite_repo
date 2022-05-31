@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"gorm.io/gorm"
 )
 
@@ -11,7 +12,7 @@ import (
 func UserInfoById(userId int64) (model.User, error) {
 	db := global.DB
 	user := model.User{}
-	err := db.Where("id=?", userId).Find(&user).Error
+	err := db.Where("id = ?", userId).Find(&user).Error
 	if err != nil {
 		return user, err
 	}
@@ -22,7 +23,7 @@ func UserInfoById(userId int64) (model.User, error) {
 func UserLogin(username string) (model.User, error) {
 	db := global.DB
 	user := model.User{}
-	err := db.Where("username=?", username).Find(&user).Error
+	err := db.Where("username = ?", username).Find(&user).Error
 	// 说明为空
 	if user == (model.User{}) {
 		return user, err
@@ -38,7 +39,8 @@ func UserRegister(username string, password string) (int64, error) {
 	if user != (model.User{}) {
 		return -1, err
 	}
-	user = model.User{UserName: username, PassWord: password}
+
+	user = model.User{Id: util.UniqueID(), UserName: username, PassWord: password}
 	err = db.Create(&user).Error
 	if err != nil {
 		return -1, err
@@ -50,7 +52,7 @@ func UserRegister(username string, password string) (int64, error) {
 func UserFollower(userId int64, publisherId int64) (bool, error) {
 	db := global.DB
 	userFollower := model.UserFollower{}
-	err := db.Where("user_id=? and follow_user_id=?", userId, publisherId).Find(&userFollower).Error
+	err := db.Where("user_id = ? and follow_user_id = ?", userId, publisherId).Find(&userFollower).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 
 	}

@@ -23,20 +23,18 @@ func UserInfoOther(context *gin.Context) {
 	publishId, _ = strconv.ParseInt(context.Query("user_id"), 10, 64)
 	// 这块就不用鉴权了，能够进入到这块说明中间件那块已经鉴权过了，只需要获取用户信息
 	// var user model.User
-	user, _ := context.Get(global.UserName)
+	user, _ := context.Get(global.CtxUserKey)
 	// 查询视频发布者信息
 	publisher, _ := dao.UserInfoById(publishId)
 	// 查询用户是否已经关注这个视频发布者
 	exists, _ := dao.UserFollower(user.(model.User).Id, publishId)
+
 	// 构建响应对象
 	userResp := response.UserResponse{
 		Response: response.Response{StatusCode: 200, StatusMsg: "成功"},
 		User: response.User{
-			Id:            publishId,
-			Name:          publisher.Name,
-			FollowCount:   publisher.FollowCount,
-			FollowerCount: publisher.FollowerCount,
-			IsFollow:      exists,
+			User:     publisher,
+			IsFollow: exists,
 		},
 	}
 	context.JSON(http.StatusOK, userResp)
@@ -44,15 +42,18 @@ func UserInfoOther(context *gin.Context) {
 
 // UserInfo 获取当前登录用户的信息
 func UserInfo(context *gin.Context) {
-	// 获取当前用户
-	user, _ := context.Get(global.UserName)
+	// 通过全局 Key 获取当前用户
+	// user, _ := context.Get(global.CtxUserKey)
+	u := CtxUser(context)
+	if u == DefUser {
+		context.JSON(http.StatusForbidden, response.BaseInputError("Token invalid!!"))
+		return
+	}
+
 	// 封装用户信息
 	userResp := response.User{
-		Id:            user.(model.User).Id,
-		Name:          user.(model.User).Name,
-		FollowCount:   user.(model.User).FollowerCount,
-		FollowerCount: user.(model.User).FollowerCount,
-		IsFollow:      true, // 由于这里是用户在主页看到自己信息，所以是默认关注自己的
+		User:     *u,
+		IsFollow: true, // 由于这里是用户在主页看到自己信息，所以是默认关注自己的
 	}
 	context.JSON(http.StatusOK, response.UserResponse{
 		Response: response.Response{StatusCode: 0, StatusMsg: "成功"},
@@ -70,17 +71,13 @@ func UserRegister(context *gin.Context) {
 	// 插入数据
 	userId, err := dao.UserRegister(username, password)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, "账号重复，请重新设置")
+		context.JSON(http.StatusBadRequest, response.BaseInputError("不允许重复的 username"))
 		return
 	}
 	// 生成token
 	user := model.User{Id: userId, UserName: username, PassWord: password}
 	token, _ := util.GetToken(user)
-	context.JSON(http.StatusOK, response.UserRegisterResponse{
-		Response: response.Response{StatusCode: 200, StatusMsg: "注册成功"},
-		UserId:   userId,
-		Token:    token,
-	})
+	context.JSON(http.StatusOK, response.UserTokenSuccess(userId, token, "注册成功"))
 }
 
 // UserLogin 用户登录
@@ -100,13 +97,14 @@ func UserLogin(context *gin.Context) {
 	if strings.Compare(password, user.PassWord) == 0 {
 		// 获取token
 		token, _ := util.GetToken(user)
-		context.JSON(http.StatusOK, response.UserLoginResponse{
-			Response: response.Response{StatusCode: 200, StatusMsg: "登录成功"},
+
+		context.JSON(http.StatusOK, response.UserTokenSuccess(user.Id, token, "登陆成功"))
+		/*context.JSON(http.StatusOK, response.UserTokenResponse{
+			Response: response.Response{StatusCode: 0, StatusMsg: "登录成功"},
 			UserId:   user.Id,
 			Token:    token,
-		})
-	} else {
-		context.JSON(http.StatusBadRequest, "账号或密码错误")
+		})*/
 		return
 	}
+	context.JSON(http.StatusBadRequest, response.BaseInputError("账号或密码错误"))
 }

@@ -26,7 +26,7 @@ func JWTAuth() gin.HandlerFunc {
 		}
 		// 获取请求头中 token，实际是一个完整被签名过的 token
 		// tokenStr := c.GetHeader("Authorization")
-		tokenStr := c.Query("token")
+		tokenStr := getToken(c)
 		// fmt.Println(tokenStr)
 		if tokenStr == "" {
 			c.JSON(http.StatusForbidden, "Permission denied!")
@@ -43,9 +43,22 @@ func JWTAuth() gin.HandlerFunc {
 		}
 
 		// 将claim中的user信息存在context中
-		c.Set(global.UserName, claim.User)
+		c.Set(global.CtxUserKey, claim.User)
 
 		// 这里执行路由 HandlerFunc
 		c.Next()
 	}
+}
+
+const JWTAuthKey = "token"
+
+func getToken(ctx *gin.Context) (token string) {
+	if token = ctx.Query(JWTAuthKey); token != "" {
+		return token
+	}
+	if token = ctx.PostForm(JWTAuthKey); token != "" {
+		return token
+	}
+
+	return ""
 }

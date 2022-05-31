@@ -98,7 +98,7 @@ func ZSetRangeByScoreInt(key string, z *redis.ZRangeBy) ([]int64, error) {
 	res := make([]int64, 0, len(strings))
 	var p int64
 	for idx := range strings {
-		p, err = strconv.ParseInt(strings[idx], 64, 10)
+		p, err = strconv.ParseInt(strings[idx], 10, 64)
 		if err != nil {
 			return res, err
 		}
