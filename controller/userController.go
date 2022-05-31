@@ -75,7 +75,7 @@ func UserRegister(context *gin.Context) {
 		return
 	}
 	// 生成token
-	user := model.User{Id: userId, UserName: username, PassWord: password}
+	user := model.User{Id: userId, UserName: username, Name: username}
 	token, _ := util.GetToken(user)
 	context.JSON(http.StatusOK, response.UserTokenSuccess(userId, token, "注册成功"))
 }
@@ -96,6 +96,7 @@ func UserLogin(context *gin.Context) {
 	// strings.Compare(s1,s2), 0代表相等，1代表s1>s2,-1代表s1<s2
 	if strings.Compare(password, user.PassWord) == 0 {
 		// 获取token
+		user.PassWord = ""
 		token, _ := util.GetToken(user)
 
 		context.JSON(http.StatusOK, response.UserTokenSuccess(user.Id, token, "登陆成功"))

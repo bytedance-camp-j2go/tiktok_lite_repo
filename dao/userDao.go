@@ -40,7 +40,7 @@ func UserRegister(username string, password string) (int64, error) {
 		return -1, err
 	}
 
-	user = model.User{Id: util.UniqueID(), UserName: username, PassWord: password}
+	user = model.User{Id: util.UniqueID(), UserName: username, Name: username, PassWord: password}
 	err = db.Create(&user).Error
 	if err != nil {
 		return -1, err
