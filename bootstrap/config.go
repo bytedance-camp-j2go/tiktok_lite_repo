@@ -2,12 +2,12 @@ package bootstrap
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/config"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/fatih/color"
 	"github.com/spf13/viper"
 	"os"
+	"tiktok-lite/config"
+	"tiktok-lite/global"
+	"tiktok-lite/util"
 )
 
 // InitConfig >> 初始化配置

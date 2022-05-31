@@ -1,8 +1,8 @@
 package base
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
 )
 
 // Model 统一提供 Driver 行为的定义

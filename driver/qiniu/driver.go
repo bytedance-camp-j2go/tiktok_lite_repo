@@ -3,11 +3,11 @@ package qiniu
 import (
 	"context"
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/driver/base"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/qiniu/go-sdk/v7/storage"
 	"go.uber.org/zap"
+	"tiktok-lite/driver/base"
+	"tiktok-lite/model"
+	"tiktok-lite/util"
 )
 
 func Init() {

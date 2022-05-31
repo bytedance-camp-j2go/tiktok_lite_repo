@@ -1,8 +1,8 @@
 package driver
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/driver/qiniu"
 	"go.uber.org/zap"
+	"tiktok-lite/driver/qiniu"
 )
 
 func Init() {

@@ -2,13 +2,13 @@ package util
 
 import (
 	"encoding/json"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+	"tiktok-lite/global"
 )
 
 func CreatFile(name string) (*os.File, error) {

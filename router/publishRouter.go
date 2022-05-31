@@ -1,8 +1,8 @@
 package router
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/controller"
 	"github.com/gin-gonic/gin"
+	"tiktok-lite/controller"
 )
 
 // PublishRouterGroup publish下的所有请求：/publish/list/ /publish/action

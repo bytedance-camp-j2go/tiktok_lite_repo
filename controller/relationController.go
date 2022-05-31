@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"tiktok-lite/dao"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
+	"tiktok-lite/response"
 )
 
 /**
@@ -26,7 +26,7 @@ func RelationAction(c *gin.Context) {
 	actionType := c.Query("action_type")
 
 	switch actionType {
-	//关注操作
+	// 关注操作
 	case "1":
 		err := global.RedisDB.SAdd(c, "follow_list::"+userIdStr, toUserId).Err()
 		if err != nil {
@@ -45,7 +45,7 @@ func RelationAction(c *gin.Context) {
 		c.JSON(http.StatusOK, response.RelationActionResponse{
 			Response: response.Response{StatusCode: 0, StatusMsg: "关注成功"},
 		})
-	//取消关注
+	// 取消关注
 	case "2":
 		err := global.RedisDB.SRem(c, "follow_list::"+userIdStr, toUserId).Err()
 		if err != nil {
@@ -64,7 +64,7 @@ func RelationAction(c *gin.Context) {
 		c.JSON(http.StatusOK, response.RelationActionResponse{
 			Response: response.Response{StatusCode: 0, StatusMsg: "取消关注成功"},
 		})
-	//请求错误
+	// 请求错误
 	default:
 		c.JSON(http.StatusBadRequest, response.RelationActionResponse{
 			Response: response.Response{StatusCode: -1, StatusMsg: "行为异常"},

@@ -2,10 +2,10 @@ package main_test
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/bootstrap"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"os"
 	"testing"
+	"tiktok-lite/bootstrap"
+	"tiktok-lite/util"
 )
 
 // 多版本测试

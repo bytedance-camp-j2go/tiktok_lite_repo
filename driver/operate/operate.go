@@ -1,8 +1,8 @@
 package operate
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/driver/base"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+	"tiktok-lite/driver/base"
+	"tiktok-lite/model"
 )
 
 // 示例 >> 定义驱动器操作

@@ -2,10 +2,10 @@ package model
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"strings"
+	"tiktok-lite/global"
 )
 
 func init() {

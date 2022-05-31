@@ -1,7 +1,7 @@
 package response
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+	"tiktok-lite/model"
 )
 
 // FeedResponse 视频流接口的响应

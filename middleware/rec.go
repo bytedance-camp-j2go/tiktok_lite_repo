@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/gin-gonic/gin"
 	"net"
 	"net/http"
@@ -9,6 +8,7 @@ import (
 	"os"
 	"runtime/debug"
 	"strings"
+	"tiktok-lite/global"
 )
 
 // GinRecovery 异常恢复处理

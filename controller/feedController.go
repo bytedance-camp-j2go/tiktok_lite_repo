@@ -1,16 +1,16 @@
 package controller
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
 	"net/http"
 	"strconv"
+	"tiktok-lite/dao"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
+	"tiktok-lite/response"
+	"tiktok-lite/util"
 	"time"
 )
 
@@ -34,7 +34,6 @@ func Feed(ctx *gin.Context) {
 }
 
 // 处理数据
-//
 func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 	// 需要计算 start 在 set 中的排名, 决定使用二分查找
 	// 找到比 start 大的第一个元素的排名, 然后返回 start + offset 个视频信息
@@ -64,16 +63,7 @@ func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 
 }
 
-func calNextTime(videos []response.Video) int64 {
-	n := len(videos)
-	if n == 0 {
-		return util.TimeNowInt64()
-	}
-	lastVideo := videos[n-1]
-	return lastVideo.UpdatedAt.UnixMilli()
-}
-
-// 获取 video 信息并封装用户信息
+// videoProcess 获取 video 信息并封装用户信息，封装
 func videoProcess(videoIds []int64, uid int64) []response.Video {
 	videos, err := dao.VideoQueryList(videoIds)
 	if err != nil {
@@ -95,6 +85,17 @@ func videoProcess(videoIds []int64, uid int64) []response.Video {
 		res = append(res, response.Video{Video: video, Author: author})
 	}
 	return res
+}
+
+//  ====================== 时间解析 ======================
+
+func calNextTime(videos []response.Video) int64 {
+	n := len(videos)
+	if n == 0 {
+		return util.TimeNowInt64()
+	}
+	lastVideo := videos[n-1]
+	return lastVideo.UpdatedAt.UnixMilli()
 }
 
 // ParsingTimestampStr 解析时间戳字符串

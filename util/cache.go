@@ -1,10 +1,10 @@
 package util
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
 	"strconv"
+	"tiktok-lite/global"
 	"time"
 )
 

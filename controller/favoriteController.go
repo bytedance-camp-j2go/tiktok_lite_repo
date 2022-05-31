@@ -1,14 +1,14 @@
 package controller
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"net/http"
 	"strconv"
+	"tiktok-lite/dao"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
+	"tiktok-lite/response"
 	"time"
 )
 
@@ -32,7 +32,7 @@ func FavoriteAction(c *gin.Context) {
 			Score:  float64(time.Now().Unix()),
 			Member: videoId,
 		}
-		//维护一个排序集合，key为favorite_set::userId，value 为videoId，按照时间顺序排序
+		// 维护一个排序集合，key为favorite_set::userId，value 为videoId，按照时间顺序排序
 		err := global.RedisDB.ZAdd(c, "favorite_set::"+userIdStr, zset).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
@@ -41,8 +41,8 @@ func FavoriteAction(c *gin.Context) {
 			return
 		}
 
-		//维护一个set，key为favorite_count_set::videoId，value为用户id
-		//用来保存这个视频下面哪些用户点赞
+		// 维护一个set，key为favorite_count_set::videoId，value为用户id
+		// 用来保存这个视频下面哪些用户点赞
 		err = global.RedisDB.SAdd(c, "favorite_count_set::"+videoId, userId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
@@ -55,7 +55,7 @@ func FavoriteAction(c *gin.Context) {
 			Response: response.Response{StatusCode: 0, StatusMsg: "点赞成功"},
 		})
 	case "2":
-		//从zset中删除取消点赞的视频
+		// 从zset中删除取消点赞的视频
 		err := global.RedisDB.ZRem(c, "favorite_set::"+userIdStr, videoId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
@@ -64,7 +64,7 @@ func FavoriteAction(c *gin.Context) {
 			return
 		}
 
-		//取消点赞，从favorite_count_set::videoId删除该用户
+		// 取消点赞，从favorite_count_set::videoId删除该用户
 		err = global.RedisDB.SRem(c, "favorite_count_set::"+videoId, userId).Err()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.FavoriteActionResponse{
@@ -107,11 +107,11 @@ func FavoriteList(c *gin.Context) {
 	for i := 0; i < len(res); i++ {
 		VideoIdInt64[i], _ = strconv.ParseInt(res[i], 10, 64)
 	}
-	//获取视频对象数组
+	// 获取视频对象数组
 	queryList, err := dao.VideoQueryList(VideoIdInt64)
 
 	list := make([]response.FavoriteVideo, len(res))
-	//封装视频数组
+	// 封装视频数组
 	for i := 0; i < len(res); i++ {
 		userModel, _ := dao.UserInfoById(queryList[i].UserId)
 		videoUser := strconv.FormatInt(queryList[i].UserId, 10)

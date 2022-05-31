@@ -2,12 +2,12 @@ package qiniu
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
 	"go.uber.org/zap"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
+	"tiktok-lite/util"
 )
 
 // TODO IMPL QinNiu SDK

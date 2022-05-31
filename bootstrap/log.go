@@ -2,9 +2,9 @@ package bootstrap
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"go.uber.org/zap"
+	"tiktok-lite/global"
+	"tiktok-lite/util"
 )
 
 // InitLogger 初始化 log 日志, 使用 zap 的原因是因为高性能

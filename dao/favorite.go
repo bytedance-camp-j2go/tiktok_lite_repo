@@ -2,7 +2,7 @@ package dao
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
+	"tiktok-lite/global"
 )
 
 /* Redis 操作，查询用户关注状态 */

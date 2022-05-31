@@ -1,12 +1,12 @@
 package middleware
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/utils"
 	"net/http"
 	"strings"
+	"tiktok-lite/global"
+	"tiktok-lite/util"
 )
 
 // JWTAuth 鉴权中间件

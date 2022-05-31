@@ -2,10 +2,10 @@ package bootstrap
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
+	"tiktok-lite/global"
 	// "gorm.io/gorm"
 )
 

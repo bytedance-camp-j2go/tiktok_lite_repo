@@ -1,11 +1,11 @@
 package global
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/config"
 	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
 	_ "go.uber.org/zap"
 	"gorm.io/gorm"
+	"tiktok-lite/config"
 )
 
 var (

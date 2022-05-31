@@ -2,17 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/bootstrap"
-	_ "github.com/bytedance-camp-j2go/tiktok_lite_repo/driver"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/driver/operate"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"io"
 	"os"
 	"os/user"
 	"strings"
 	"testing"
+	"tiktok-lite/bootstrap"
+	_ "tiktok-lite/driver"
+	"tiktok-lite/driver/operate"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
+	"tiktok-lite/util"
 	"time"
 )
 

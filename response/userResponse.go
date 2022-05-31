@@ -1,8 +1,8 @@
 package response
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+	"tiktok-lite/dao"
+	"tiktok-lite/model"
 )
 
 // User 返回用户信息中的User对象

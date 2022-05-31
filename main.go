@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/bootstrap"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/middleware"
 	"github.com/gin-gonic/gin"
 	"os"
+	"tiktok-lite/bootstrap"
+	"tiktok-lite/global"
+	"tiktok-lite/middleware"
 )
 
 func main() {

@@ -3,8 +3,8 @@ package util
 import (
 	"errors"
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/dgrijalva/jwt-go/v4"
+	"tiktok-lite/model"
 	// "github.com/golang-jwt/jwt"
 	"time"
 )

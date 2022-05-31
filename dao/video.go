@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
 )
 
 // VideoQueryList 查询视频列表

@@ -1,4 +1,4 @@
-module github.com/bytedance-camp-j2go/tiktok_lite_repo
+module tiktok-lite
 
 go 1.18
 

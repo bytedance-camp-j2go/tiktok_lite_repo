@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
 	"github.com/gin-gonic/gin"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
 )
 
 var DefUser = &model.User{

@@ -2,18 +2,18 @@ package controller
 
 import (
 	"fmt"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/dao"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/driver/operate"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/response"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/gin-gonic/gin"
 	"github.com/wxnacy/wgo/arrays"
 	"go.uber.org/zap"
 	"net/http"
 	"path"
 	"strings"
+	"tiktok-lite/dao"
+	"tiktok-lite/driver/operate"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
+	"tiktok-lite/response"
+	"tiktok-lite/util"
 	"time"
 )
 

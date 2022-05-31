@@ -2,10 +2,10 @@ package dao
 
 import (
 	"errors"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/model"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"gorm.io/gorm"
+	"tiktok-lite/global"
+	"tiktok-lite/model"
+	"tiktok-lite/util"
 )
 
 // UserInfoById 根据userId获取用户信息

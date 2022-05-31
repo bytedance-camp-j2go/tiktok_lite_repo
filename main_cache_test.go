@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/bootstrap"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/global"
-	"github.com/bytedance-camp-j2go/tiktok_lite_repo/util"
 	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
 	"strconv"
 	"testing"
+	"tiktok-lite/bootstrap"
+	"tiktok-lite/global"
+	"tiktok-lite/util"
 	"time"
 )
 
