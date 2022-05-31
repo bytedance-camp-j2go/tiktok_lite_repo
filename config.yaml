@@ -9,15 +9,15 @@ logs: "./logs"
 logLevel: 1
 
 mysql:
-  name: "{userName}"
-  host: "{mysqlHost}"
+  name: "root"
+  host: "localhost"
   port: 3306
-  password: "{passwd}"
-  dbName: "{dataBaseName}"
+  password: "12345678"
+  dbName: "douyin"
 
 redis:
-  host: "{redisHost}"
+  host: "localhost"
   port: 6379
-  password: "{passwd}"
+  password: ""
   # redis 库号
   dbNo: 7
