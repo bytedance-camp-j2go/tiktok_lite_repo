@@ -40,6 +40,17 @@ func PublishList(userId int64) ([]model.Video, error) {
 	return videos, nil
 }
 
+// PublishIdList 查询用户发布的视频 id 列表
+func PublishIdList(userId int64) ([]int64, error) {
+	db := global.DB
+	var videosId []int64
+	err := db.Table("video").Select("video_id").Where("user_id = ?", userId).Find(&videosId).Error
+	if err != nil {
+		return videosId, err
+	}
+	return videosId, nil
+}
+
 // UserFavorite 用户点赞的视频列表
 func UserFavorite(userId int64) ([]int64, error) {
 	db := global.DB

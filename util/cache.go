@@ -3,7 +3,6 @@ package util
 import (
 	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
-	"strconv"
 	"tiktok-lite/global"
 	"time"
 )
@@ -43,6 +42,26 @@ func ZAdd2Redis(key string, score float64, v any) {
 			Score: score, Member: v,
 		},
 	)
+}
+
+// func ZSCard(key string) int64 {
+// 	result, err := global.RedisDB.SCard(global.RedisDB.Context(), key).Result()
+// 	if err != nil {
+// 		zap.L().Error("redis error!!", zap.String("Key", key), zap.Error(err))
+// 	}
+// 	return result
+// }
+
+func ZRM2Redis(key string, ms ...any) int64 {
+	cnt, err := global.RedisDB.ZRem(
+		global.RedisDB.Context(),
+		key,
+		ms,
+	).Result()
+	if err != nil {
+		zap.L().Error("redis del error!!", zap.String("Key", key), zap.Error(err))
+	}
+	return cnt
 }
 
 // ZSetRangeByScoreStrings 范围查找值
@@ -98,7 +117,7 @@ func ZSetRangeByScoreInt(key string, z *redis.ZRangeBy) ([]int64, error) {
 	res := make([]int64, 0, len(strings))
 	var p int64
 	for idx := range strings {
-		p, err = strconv.ParseInt(strings[idx], 10, 64)
+		p, err = String10Bit2Int64(strings[idx])
 		if err != nil {
 			return res, err
 		}
@@ -107,6 +126,10 @@ func ZSetRangeByScoreInt(key string, z *redis.ZRangeBy) ([]int64, error) {
 	return res, nil
 }
 
-func ZSetCnt(key string) (int64, error) {
-	return global.RedisDB.ZCard(global.RedisDB.Context(), key).Result()
+func ZSetCnt(key string) int64 {
+	result, err := global.RedisDB.ZCard(global.RedisDB.Context(), key).Result()
+	if err != nil {
+		zap.L().Error("redis error!!", zap.String("Key", key), zap.Error(err))
+	}
+	return result
 }

@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 	"strings"
 	"tiktok-lite/dao"
 	"tiktok-lite/global"
@@ -20,7 +19,7 @@ func UserInfoOther(context *gin.Context) {
 	// 分别获取发布视频者id和用户token
 	// 注意：这块使用context.query()获取的是字符串类型，需要将字符串转换为int64
 	var publishId int64
-	publishId, _ = strconv.ParseInt(context.Query("user_id"), 10, 64)
+	publishId, _ = util.String10Bit2Int64(context.Query("user_id"))
 	// 这块就不用鉴权了，能够进入到这块说明中间件那块已经鉴权过了，只需要获取用户信息
 	// var user model.User
 	user, _ := context.Get(global.CtxUserKey)

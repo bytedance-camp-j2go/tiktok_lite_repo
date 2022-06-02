@@ -8,6 +8,7 @@ import (
 	"tiktok-lite/global"
 	"tiktok-lite/model"
 	"tiktok-lite/response"
+	"tiktok-lite/util"
 )
 
 /**
@@ -94,7 +95,7 @@ func RelationFollowList(c *gin.Context) {
 	list := make([]response.RelationUser, len(result))
 
 	for i := 0; i < len(result); i++ {
-		followId, _ := strconv.ParseInt(result[i], 10, 64)
+		followId, _ := util.String10Bit2Int64(result[i])
 		modelUser, _ := dao.UserInfoById(followId)
 		list[i] = response.RelationUser{
 			Id:            modelUser.Id,
@@ -132,7 +133,7 @@ func RelationFollowerList(c *gin.Context) {
 	list := make([]response.RelationUser, len(result))
 
 	for i := 0; i < len(result); i++ {
-		followId, _ := strconv.ParseInt(result[i], 10, 64)
+		followId, _ := util.String10Bit2Int64(result[i])
 		modelUser, _ := dao.UserInfoById(followId)
 		list[i] = response.RelationUser{
 			Id:            modelUser.Id,

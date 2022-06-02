@@ -24,4 +24,10 @@ const (
 
 	// VideoSeqSetKey 视频列表 ZSet key
 	VideoSeqSetKey = "video:id-seq"
+
+	// UserFavoriteVideoSetKeySuffix 用户点赞视频集合 ZSetKey 前缀
+	UserFavoriteVideoSetKeySuffix = "user:favorite:%d"
+
+	// VideoFavoriteUserSetKeySuffix 视频点赞用户集合 ZSetKey 前缀
+	VideoFavoriteUserSetKeySuffix = "video:favorite:%d"
 )

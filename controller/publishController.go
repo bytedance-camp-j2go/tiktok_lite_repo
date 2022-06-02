@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/wxnacy/wgo/arrays"
 	"go.uber.org/zap"
 	"net/http"
 	"path"
@@ -137,46 +136,62 @@ func ConfusionName(o string) string {
 
 // PublishList 发布列表
 // 场景：登录用户的视频发布列表，列出用户所有投稿过的视频
-func PublishList(context *gin.Context) {
-	// 获取用户信息
-	var a any
-	a, _ = context.Get(global.CtxUserKey)
-	user := a.(model.User)
-	// 封装用户响应信息
-	userResp := response.User{
-		// Id:            user.Id,
-		// Name:          user.Name,
-		// FollowCount:   user.FollowCount,
-		// FollowerCount: user.FollowerCount,
-		User:     user,
-		IsFollow: true, // 注意；这里是用户看自己的主页，所以肯定是关注了自己的
-	}
-	// 查询用户发布的视频列表
-	videos, err := dao.PublishList(user.Id)
-	if err != nil {
-		context.JSON(http.StatusOK, response.Response{StatusCode: 1, StatusMsg: "查询失败"})
+func PublishList(c *gin.Context) {
+	// // 获取用户信息
+	// var a any
+	// a, _ = context.Get(global.CtxUserKey)
+	// user := a.(model.User)
+	// // 封装用户响应信息
+	// userResp := response.User{
+	// 	// Id:            user.Id,
+	// 	// Name:          user.Name,
+	// 	// FollowCount:   user.FollowCount,
+	// 	// FollowerCount: user.FollowerCount,
+	// 	User:     user,
+	// 	IsFollow: true, // 注意；这里是用户看自己的主页，所以肯定是关注了自己的
+	// }
+	// // 查询用户发布的视频列表
+	// videos, err := dao.PublishList(user.Id)
+	// if err != nil {
+	// 	context.JSON(http.StatusOK, response.Response{StatusCode: 1, StatusMsg: "查询失败"})
+	// 	return
+	// }
+	// // 查询用户点赞过自己的视频
+	// videosId, _ := dao.UserFavorite(user.Id)
+	// size := len(videos)
+	// videosResp := make([]response.VideoList, size, size)
+	// // var videosResp [size]response.VideoList
+	// // 创建响应对象
+	// for i, v := range videos {
+	// 	videosResp[i].Id = int64(v.Model.ID)
+	// 	videosResp[i].Author = userResp // 用户信息
+	// 	videosResp[i].PlayUrl = v.PlayUrl
+	// 	videosResp[i].CoveUrl = v.CoverUrl
+	// 	videosResp[i].FavoriteCount = v.FavoriteCount
+	// 	videosResp[i].CommentCount = v.CommentCount
+	// 	videosResp[i].CommentCount = v.CommentCount
+	// 	videosResp[i].IsFavorite = arrays.ContainsInt(videosId, int64(v.ID)) > 0
+	// 	videosResp[i].IsFavorite = true // 注意：这块需要判断用户对这个视频有没有点赞
+	// 	videosResp[i].Title = v.Title
+	// }
+	// context.JSON(http.StatusOK, response.PublishListResponse{
+	// 	Response:  response.Response{StatusCode: 0, StatusMsg: "成功"},
+	// 	VideoList: videosResp,
+	// })
+
+	user := *CtxUser(c)
+	// 根据时间戳, 返回 list
+	// feedProcess(c, start, user)
+	videoIdList, err := dao.PublishIdList(user.Id)
+	if len(videoIdList) == 0 || err != nil {
+		zap.L().Debug("get publish video list err!!", zap.Int("len", len(videoIdList)), zap.Error(err))
+		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
-	// 查询用户点赞过自己的视频
-	videosId, _ := dao.UserFavorite(user.Id)
-	size := len(videos)
-	videosResp := make([]response.VideoList, size, size)
-	// var videosResp [size]response.VideoList
-	// 创建响应对象
-	for i, v := range videos {
-		videosResp[i].Id = int64(v.Model.ID)
-		videosResp[i].Author = userResp // 用户信息
-		videosResp[i].PlayUrl = v.PlayUrl
-		videosResp[i].CoveUrl = v.CoverUrl
-		videosResp[i].FavoriteCount = v.FavoriteCount
-		videosResp[i].CommentCount = v.CommentCount
-		videosResp[i].CommentCount = v.CommentCount
-		videosResp[i].IsFavorite = arrays.ContainsInt(videosId, int64(v.ID)) > 0
-		videosResp[i].IsFavorite = true // 注意：这块需要判断用户对这个视频有没有点赞
-		videosResp[i].Title = v.Title
-	}
-	context.JSON(http.StatusOK, response.PublishListResponse{
-		Response:  response.Response{StatusCode: 0, StatusMsg: "成功"},
-		VideoList: videosResp,
+
+	videoFeed(videoIdList, user.Id)
+	c.JSON(http.StatusOK, response.FavoriteListResponse{
+		Response:  response.BaseSuccess("get publish list success"),
+		VideoList: videoFeed(videoIdList, user.Id),
 	})
 }

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"strconv"
 	"time"
 )
 
@@ -11,4 +12,8 @@ const (
 
 func GetNowFormatTodayTime() string {
 	return time.Now().Format(DayFormatLayout)
+}
+
+func String10Bit2Int64(str string) (int64, error) {
+	return strconv.ParseInt(str, 10, 64)
 }

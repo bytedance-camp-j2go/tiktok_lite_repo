@@ -20,6 +20,7 @@ func QueryFollowCount(userId string) int64 {
 		return 0
 	}
 	return result
+	// return util.ZSCard(global.VideoFavoriteUserSetKeySuffix + userId)
 }
 
 // 方法：判断对方是否关注了我
@@ -38,4 +39,5 @@ func QueryFollowerCount(userId string) int64 {
 		return 0
 	}
 	return result
+	// return util.ZSCard(global.VideoFavoriteUserSetKeySuffix + userId)
 }

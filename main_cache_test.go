@@ -27,10 +27,7 @@ func TestInsertVideoCache(t *testing.T) {
 
 func TestZSetCnt(t *testing.T) {
 	bootstrap.InitAll()
-	cnt, err := util.ZSetCnt("test:" + global.VideoSeqSetKey)
-	if err != nil {
-		return
-	}
+	cnt := util.ZSetCnt("test:" + global.VideoSeqSetKey)
 	zap.L().Info("ZSet Cnt", zap.Int64("cnt", cnt))
 }
 

@@ -6,7 +6,6 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"strconv"
-	"tiktok-lite/dao"
 	"tiktok-lite/global"
 	"tiktok-lite/model"
 	"tiktok-lite/response"
@@ -53,7 +52,7 @@ func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 		return
 	}
 
-	videos := videoProcess(videoIdList, user.Id)
+	videos := videoFeed(videoIdList, user.Id)
 
 	ctx.JSON(http.StatusOK, response.FeedResponse{
 		StatusCode: 0,
@@ -63,29 +62,33 @@ func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 
 }
 
-// videoProcess 获取 video 信息并封装用户信息，封装
-func videoProcess(videoIds []int64, uid int64) []response.Video {
-	videos, err := dao.VideoQueryList(videoIds)
-	if err != nil {
-		zap.L().Error("获取视频信息失败!!", zap.Error(err))
-		return nil
-	}
+// // videoFeed 获取 video 信息并封装用户信息，封装
+// func videoFeed(videoIds []int64, uid int64) []response.Video {
+// 	videos, err := dao.VideoQueryList(videoIds)
+// 	if err != nil {
+// 		zap.L().Error("获取视频信息失败!!", zap.Error(err))
+// 		return nil
+// 	}
+//
+// 	res := make([]response.Video, 0, len(videos))
+//
+// 	// 不在 for 循环内声明变量
+// 	var author response.User
+// 	for _, video := range videos {
+// 		author, err = response.NewUser(video.UserId, uid)
+// 		if err != nil {
+// 			zap.L().Error("get UserInfo", zap.Error(err))
+// 			res = append(res, response.Video{Video: video})
+// 			continue
+// 		}
+// 		res = append(res, response.Video{Video: video, Author: author})
+// 	}
+// 	return res
+// }
 
-	res := make([]response.Video, 0, len(videos))
-
-	// 不在 for 循环内声明变量
-	var author response.User
-	for _, video := range videos {
-		author, err = response.NewUser(video.UserId, uid)
-		if err != nil {
-			zap.L().Error("get UserInfo", zap.Error(err))
-			res = append(res, response.Video{Video: video})
-			continue
-		}
-		res = append(res, response.Video{Video: video, Author: author})
-	}
-	return res
-}
+// func videoProcess() {
+//
+// }
 
 //  ====================== 时间解析 ======================
 
@@ -100,7 +103,7 @@ func calNextTime(videos []response.Video) int64 {
 
 // ParsingTimestampStr 解析时间戳字符串
 func ParsingTimestampStr(timeStr string) time.Time {
-	timestamp, err := strconv.ParseInt(timeStr, 10, 64)
+	timestamp, err := util.String10Bit2Int64(timeStr)
 	if err != nil {
 		return time.Now()
 	}
