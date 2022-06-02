@@ -9,7 +9,6 @@ import (
 	// "gorm.io/gorm"
 )
 
-// 初始化mysql，获取mysql连接
 // InitDB 初始化mysql，获取mysql连接
 func InitDB() *gorm.DB {
 

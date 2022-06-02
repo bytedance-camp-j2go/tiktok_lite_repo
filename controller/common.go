@@ -14,7 +14,7 @@ var DefUser = &model.User{
 func CtxUser(context *gin.Context) *model.User {
 	// 从上下文获取用户信息
 	ctxVal, _ := context.Get(global.CtxUserKey)
-
+	// context.Request.Host
 	user, ok := ctxVal.(model.User)
 	if !ok {
 		// zap.L().Error("user info err!")

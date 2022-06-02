@@ -5,7 +5,6 @@ import (
 	"gorm.io/gorm"
 	"tiktok-lite/global"
 	"tiktok-lite/model"
-	"tiktok-lite/response"
 	"tiktok-lite/util"
 )
 
@@ -63,18 +62,18 @@ func UserFollower(userId int64, publisherId int64) (bool, error) {
 	return true, nil
 }
 
-// 通过userId和publisherId查询publisher信息
-func getUserById(userId int64, publisherId int64) (response.User, error) {
-	db := global.DB
-	var publisher model.User
-	var publisherResp response.User
-	err := db.Where("user_id=?", userId).Find(&publisher).Error
-	if publisher == (model.User{}) {
-		return publisherResp, err
-	}
-	isFollower, _ := UserFollower(userId, publisherId)
-	// 拼接publisherResp
-	publisherResp.User = publisher
-	publisherResp.IsFollow = isFollower
-	return publisherResp, nil
-}
+// // 通过userId和publisherId查询publisher信息
+// func getUserById(userId int64, publisherId int64) (response.User, error) {
+// 	db := global.DB
+// 	var publisher model.User
+// 	var publisherResp response.User
+// 	err := db.Where("user_id=?", userId).Find(&publisher).Error
+// 	if publisher == (model.User{}) {
+// 		return publisherResp, err
+// 	}
+// 	isFollower, _ := UserFollower(userId, publisherId)
+// 	// 拼接publisherResp
+// 	publisherResp.User = publisher
+// 	publisherResp.IsFollow = isFollower
+// 	return publisherResp, nil
+// }

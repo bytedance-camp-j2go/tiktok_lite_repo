@@ -38,9 +38,9 @@ func PublishAction(context *gin.Context) {
 	// }
 
 	u := CtxUser(context)
-	if u != DefUser {
+	if u == DefUser {
 		zap.L().Error("user info err!")
-		context.JSON(http.StatusBadRequest, response.Response{StatusCode: 2, StatusMsg: ""})
+		context.JSON(http.StatusBadRequest, response.Response{StatusCode: 2, StatusMsg: "user login status error!!"})
 		return
 	}
 	user := *u
