@@ -5,7 +5,7 @@ import (
 	"tiktok-lite/controller"
 )
 
-func Feed(r *gin.RouterGroup) {
-	// r.GET("/feed/", controller.Feed)
+func FeedRouterGroup(r *gin.RouterGroup) {
+	// r.GET("/feed/", controller.FeedRouterGroup)
 	r.GET("/feed", controller.Feed)
 }

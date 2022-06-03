@@ -3,10 +3,17 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"net/http"
 	"tiktok-lite/dao"
 	"tiktok-lite/global"
 	"tiktok-lite/model"
 	"tiktok-lite/response"
+)
+
+const (
+	_ = iota
+	ActionAppend
+	ActionDel
 )
 
 var DefUser = &model.User{
@@ -53,4 +60,11 @@ func videoFeed(videoIds []int64, uid int64) []response.Video {
 		})
 	}
 	return res
+}
+
+// 封装可复用 ctx 简单的处理方法
+
+// CtxInputError 输入错误
+func CtxInputError(ctx *gin.Context, msg string) {
+	ctx.JSON(http.StatusBadRequest, response.BaseInputError(msg))
 }

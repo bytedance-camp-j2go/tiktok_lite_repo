@@ -12,24 +12,28 @@ func InitRouter(r *gin.Engine) {
 	// 分组，路由前缀为"/douyin"
 	dy := r.Group("/douyin")
 
-	// 3.1 基础接口: 用户接口
+	// 1. 基础接口: 用户接口组
+	// 用户注册、登录
 	user := dy.Group("/user")
-	// 用户注册、登录接口
 	router.UserRouterGroup(user)
-	// 3.1 基础接口：视频上传相关
-	publish := dy.Group("/publish")
+
+	// 2. 基础接口：视频发布接口组
 	// 视频投稿、发布列表
+	publish := dy.Group("/publish")
 	router.PublishRouterGroup(publish)
 
-	// 视频流接口
-	router.Feed(dy)
+	// 3. 视频流接口
+	router.FeedRouterGroup(dy)
 
+	// 4. 点赞接口组
 	favorite := dy.Group("/favorite")
 	router.FavoriteRouterGroup(favorite)
 
+	// 5. 关注接口组
 	relation := dy.Group("/relation")
 	router.RelationRouterGroup(relation)
 
-	// TODO SOME IMPL
-
+	// 6. 评论接口组
+	comment := dy.Group("/comment")
+	router.CommentRouterGroup(comment)
 }

@@ -24,7 +24,7 @@ func FavoriteAction(c *gin.Context) {
 	user := *u
 	actionType := c.Query("action_type")
 	//
-	userId := user.UserId
+	userId := user.Id
 	videoId, err := util.String10Bit2Int64(c.Query("video_id"))
 	if err != nil {
 		zap.L().Debug("parse video id error !!", zap.Error(err))

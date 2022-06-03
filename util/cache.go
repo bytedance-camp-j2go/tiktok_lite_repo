@@ -1,6 +1,7 @@
 package util
 
 import (
+	"context"
 	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
 	"tiktok-lite/global"
@@ -9,8 +10,18 @@ import (
 
 // 封装 Redis 增删、简单操作
 
+var (
+	redisClient *redis.Client
+	redisDefCtx context.Context
+)
+
+func InitRedis() {
+	redisClient = global.RedisDB
+	redisDefCtx = redisClient.Context()
+}
+
 func Save2Redis(key string, v []byte, expires time.Duration) {
-	result, err := global.RedisDB.Set(global.RedisDB.Context(), key, v, expires).Result()
+	result, err := redisClient.Set(redisDefCtx, key, v, expires).Result()
 	if err != nil {
 		zap.L().Error("写入 redis 失败", zap.Error(err))
 		return
@@ -19,7 +30,7 @@ func Save2Redis(key string, v []byte, expires time.Duration) {
 }
 
 func ExistKey(key string) (bool, error) {
-	cnt, err := global.RedisDB.Exists(global.RedisDB.Context(), key).Result()
+	cnt, err := redisClient.Exists(redisDefCtx, key).Result()
 	if err != nil || err == redis.Nil {
 		return false, err
 	}
@@ -27,7 +38,7 @@ func ExistKey(key string) (bool, error) {
 }
 
 func GetStringFromRedis(key string) (string, error) {
-	res, err := global.RedisDB.Get(global.RedisDB.Context(), key).Result()
+	res, err := redisClient.Get(redisDefCtx, key).Result()
 	if err != nil {
 		return "", err
 	}
@@ -35,8 +46,8 @@ func GetStringFromRedis(key string) (string, error) {
 }
 
 func ZAdd2Redis(key string, score float64, v any) {
-	global.RedisDB.ZAdd(
-		global.RedisDB.Context(),
+	redisClient.ZAdd(
+		redisDefCtx,
 		key,
 		&redis.Z{
 			Score: score, Member: v,
@@ -45,7 +56,7 @@ func ZAdd2Redis(key string, score float64, v any) {
 }
 
 // func ZSCard(key string) int64 {
-// 	result, err := global.RedisDB.SCard(global.RedisDB.Context(), key).Result()
+// 	result, err := redisClient.SCard(redisDefCtx, key).Result()
 // 	if err != nil {
 // 		zap.L().Error("redis error!!", zap.String("Key", key), zap.Error(err))
 // 	}
@@ -53,8 +64,8 @@ func ZAdd2Redis(key string, score float64, v any) {
 // }
 
 func ZRM2Redis(key string, ms ...any) int64 {
-	cnt, err := global.RedisDB.ZRem(
-		global.RedisDB.Context(),
+	cnt, err := redisClient.ZRem(
+		redisDefCtx,
 		key,
 		ms,
 	).Result()
@@ -66,7 +77,7 @@ func ZRM2Redis(key string, ms ...any) int64 {
 
 // ZSetRangeByScoreStrings 范围查找值
 func ZSetRangeByScoreStrings(key string, z *redis.ZRangeBy) ([]string, error) {
-	return global.RedisDB.ZRangeByScore(global.RedisDB.Context(), key, z).Result()
+	return redisClient.ZRangeByScore(redisDefCtx, key, z).Result()
 }
 
 // ZSetRangeByScoreInt
@@ -93,17 +104,17 @@ func ZSetRangeByScoreStrings(key string, z *redis.ZRangeBy) ([]string, error) {
 //
 // func ZSetRangeByScoreInt(key string, z *redis.ZRangeBy) ([]int64, error) {
 // 	// func ZSetRangeByScoreInt(key string, z *redis.ZRangeBy) ([]string, error) {
-// 	// global.RedisDB.
+// 	// redisClient.
 // 	args := []interface{}{"zrangebyscore", key, z.Min, z.Max}
 // 	if z.Offset != 0 || z.Count != 0 {
 // 		args = append(args, "limit", z.Offset, z.Count)
 // 	}
 //
-// 	// 一下仿照: global.RedisDB.Do()
-// 	ctx := global.RedisDB.Context()
+// 	// 一下仿照: redisClient.Do()
+// 	ctx := redisDefCtx
 // 	cmd := redis.NewIntSliceCmd(ctx, args...)
 // 	// cmd := redis.NewStringSliceCmd(ctx, args...)
-// 	_ = global.RedisDB.Process(ctx, cmd)
+// 	_ = redisClient.Process(ctx, cmd)
 // 	return cmd.Result()
 // }
 
@@ -127,9 +138,20 @@ func ZSetRangeByScoreInt(key string, z *redis.ZRangeBy) ([]int64, error) {
 }
 
 func ZSetCnt(key string) int64 {
-	result, err := global.RedisDB.ZCard(global.RedisDB.Context(), key).Result()
+	result, err := redisClient.ZCard(redisDefCtx, key).Result()
 	if err != nil {
 		zap.L().Error("redis error!!", zap.String("Key", key), zap.Error(err))
 	}
 	return result
+}
+
+// ZSetRank 返回 m 在 redis 中的排名，如果不存在返回 -1
+func ZSetRank(key, m string) int64 {
+	res, err := redisClient.ZRank(redisDefCtx, key, m).Result()
+	if err != nil {
+		// err == redis.Nil
+		// zap.L().Debug("ZSetRank Error!!", zap.Error(err), zap.String("z-key", key), zap.String("z-m", m))
+		return -1
+	}
+	return res
 }

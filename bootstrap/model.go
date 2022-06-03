@@ -12,6 +12,7 @@ func InitModel() {
 		&model.UserFavorite{},
 		&model.UserFollower{},
 		&model.Video{},
+		&model.Comment{},
 	)
 
 	if err != nil {

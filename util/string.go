@@ -17,3 +17,7 @@ func GetNowFormatTodayTime() string {
 func String10Bit2Int64(str string) (int64, error) {
 	return strconv.ParseInt(str, 10, 64)
 }
+
+func Int64D2String(i int64) string {
+	return strconv.FormatInt(i, 10)
+}

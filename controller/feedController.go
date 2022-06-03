@@ -25,6 +25,7 @@ func Feed(ctx *gin.Context) {
 	timeStr := ctx.Query("latest_time")
 	start := ParsingTimestampStr(timeStr)
 	user := *CtxUser(ctx)
+
 	// 根据时间戳, 返回 list
 	feedProcess(ctx, start, user)
 

@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"github.com/go-redis/redis/v8"
 	"tiktok-lite/global"
+	"tiktok-lite/util"
 )
 
 func InitRedis() {
@@ -16,4 +17,5 @@ func InitRedis() {
 	if err := global.RedisDB.Ping(global.RedisDB.Context()).Err(); err != nil {
 		panic("Redis 连接失败 >> " + err.Error())
 	}
+	util.InitRedis()
 }
