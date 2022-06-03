@@ -2,7 +2,6 @@ package model
 
 import (
 	"gorm.io/gorm"
-	"tiktok-lite/util"
 	"time"
 )
 
@@ -17,10 +16,10 @@ type Comment struct {
 	Content   string         `json:"content" gorm:"type:longtext"`
 }
 
-func NewComment() *Comment {
+func NewComment(id int64) *Comment {
 	now := time.Now()
 	return &Comment{
-		ID:        util.UniqueID(),
+		// ID:        util.UniqueID(),
 		CreatedAt: now,
 		UpdatedAt: now,
 		// UsrID:     0,

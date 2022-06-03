@@ -39,6 +39,7 @@ func CommentAction(ctx *gin.Context) {
 	}
 }
 
+// 执行一些防止 SQL 注入的查询
 func checkCommentText(text string) error {
 	if text != "" {
 		return nil
