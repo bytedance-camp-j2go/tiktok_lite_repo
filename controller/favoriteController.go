@@ -182,9 +182,9 @@ func FavoriteList(c *gin.Context) {
 		return
 	}
 
-	videoFeed(videoIdList, user.Id)
+	VideoFeed(videoIdList, user.Id)
 	c.JSON(http.StatusOK, response.FavoriteListResponse{
 		Response:  response.BaseSuccess("get publish list success"),
-		VideoList: videoFeed(videoIdList, user.Id),
+		VideoList: VideoFeed(videoIdList, user.Id),
 	})
 }

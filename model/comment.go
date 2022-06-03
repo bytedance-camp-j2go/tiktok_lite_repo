@@ -11,7 +11,7 @@ type Comment struct {
 	UsrID     int64          `json:"-" gorm:"index"`
 	VideoID   int64          `json:"-" gorm:"index"`
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
-	CreatedAt time.Time      `json:"created_date"`
+	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`
 	Content   string         `json:"content" gorm:"type:longtext"`
 }

@@ -42,6 +42,7 @@ const (
 
 // NewUser 查询 User 并计算是否已关注
 // uid = 被查询用户 id, u2id = 查询发起者 id
+// TODO 写入缓存，逻辑：NewUser 用于除了 User Info 意外的 User 数据供给，很可能重复
 func NewUser(uid, u2id int64) (User, error) {
 	if id, err := dao.UserInfoById(uid); err == nil {
 		return User{

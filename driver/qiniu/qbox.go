@@ -10,8 +10,6 @@ import (
 	"tiktok-lite/util"
 )
 
-// TODO IMPL QinNiu SDK
-
 const (
 	maxRetry        = 3
 	qnTokenCacheKey = "qiniu:token:%s"
@@ -47,7 +45,7 @@ func getCfg(account *model.DriverAccount) storage.Config {
 	case ZoneHuabei:
 		zone = &storage.ZoneHuabei
 	default:
-		// TODO 补全支持
+		// TODO 全机房支持
 		zap.L().Error("暂不支持此区域")
 		panic("no support zone")
 	}

@@ -182,16 +182,15 @@ func PublishList(c *gin.Context) {
 	user := *CtxUser(c)
 	// 根据时间戳, 返回 list
 	// feedProcess(c, start, user)
-	videoIdList, err := dao.PublishIdList(user.Id)
-	if len(videoIdList) == 0 || err != nil {
-		zap.L().Debug("get publish video list err!!", zap.Int("len", len(videoIdList)), zap.Error(err))
+	videoList, err := dao.PublishList(user.Id)
+	if len(videoList) == 0 || err != nil {
+		zap.L().Debug("get publish video list err!!", zap.Int("len", len(videoList)), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 1, StatusMsg: err.Error()})
 		return
 	}
 
-	videoFeed(videoIdList, user.Id)
 	c.JSON(http.StatusOK, response.FavoriteListResponse{
 		Response:  response.BaseSuccess("get publish list success"),
-		VideoList: videoFeed(videoIdList, user.Id),
+		VideoList: Videos2Response(videoList, user.Id),
 	})
 }

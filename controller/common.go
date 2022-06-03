@@ -34,18 +34,14 @@ func CtxUser(context *gin.Context) *model.User {
 	return &user
 }
 
-// videoFeed 获取 video 信息并封装用户信息，封装
-func videoFeed(videoIds []int64, uid int64) []response.Video {
-	videos, err := dao.VideoQueryList(videoIds)
-	if err != nil {
-		zap.L().Error("获取视频信息失败!!", zap.Error(err))
-		return nil
-	}
-
+func Videos2Response(videos []model.Video, uid int64) []response.Video {
 	res := make([]response.Video, 0, len(videos))
 
 	// 不在 for 循环内声明变量
-	var author response.User
+	var (
+		author response.User
+		err    error
+	)
 	for _, video := range videos {
 		author, err = response.NewUser(video.UserId, uid)
 		if err != nil {
@@ -62,9 +58,28 @@ func videoFeed(videoIds []int64, uid int64) []response.Video {
 	return res
 }
 
+// VideoFeed 获取 video 信息并封装用户信息，封装
+func VideoFeed(videoIds []int64, uid int64) []response.Video {
+	videos, err := dao.VideoQueryList(videoIds)
+	if err != nil {
+		zap.L().Error("获取视频信息失败!!", zap.Error(err))
+		return nil
+	}
+
+	return Videos2Response(videos, uid)
+}
+
 // 封装可复用 ctx 简单的处理方法
 
 // CtxInputError 输入错误
 func CtxInputError(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusBadRequest, response.BaseInputError(msg))
+}
+
+func CtxServerError(ctx *gin.Context, msg string) {
+	ctx.JSON(http.StatusInternalServerError, response.BaseServerError(msg))
+}
+
+func CtxBaseSuccess(ctx *gin.Context, msg string) {
+	ctx.JSON(http.StatusOK, response.BaseSuccess(msg))
 }

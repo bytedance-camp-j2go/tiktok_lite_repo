@@ -29,7 +29,6 @@ func InitConfig() {
 	v.AddConfigPath(defaultPath)
 	v.SetConfigType(configType)
 
-	// TODO 如果不存在配置自动生成
 	if err := v.ReadInConfig(); err != nil {
 		panic("read config >> " + err.Error())
 	}

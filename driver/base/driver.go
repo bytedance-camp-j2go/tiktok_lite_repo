@@ -4,7 +4,7 @@ import (
 	"tiktok-lite/model"
 )
 
-/* todo
+/*
 Config 配置
 Config() DriverConfig
 	- 抽象 Config 对象约束各种不同存储引擎的行为

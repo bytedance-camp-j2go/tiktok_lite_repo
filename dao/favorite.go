@@ -19,6 +19,5 @@ func IsFavorite(videoId, userId int64) bool {
 		fmt.Sprintf(global.VideoFavoriteUserSetKeySuffix, videoId),
 		util.Int64D2String(userId),
 	)
-	fmt.Println(rank)
 	return rank > -1
 }

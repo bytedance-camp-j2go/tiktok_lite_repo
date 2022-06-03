@@ -53,7 +53,7 @@ func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 		return
 	}
 
-	videos := videoFeed(videoIdList, user.Id)
+	videos := VideoFeed(videoIdList, user.Id)
 
 	ctx.JSON(http.StatusOK, response.FeedResponse{
 		StatusCode: 0,
@@ -63,8 +63,8 @@ func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 
 }
 
-// // videoFeed 获取 video 信息并封装用户信息，封装
-// func videoFeed(videoIds []int64, uid int64) []response.Video {
+// // VideoFeed 获取 video 信息并封装用户信息，封装
+// func VideoFeed(videoIds []int64, uid int64) []response.Video {
 // 	videos, err := dao.VideoQueryList(videoIds)
 // 	if err != nil {
 // 		zap.L().Error("获取视频信息失败!!", zap.Error(err))
