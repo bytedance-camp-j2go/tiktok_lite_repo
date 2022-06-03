@@ -37,6 +37,7 @@ func PublishList(userId int64) ([]model.Video, error) {
 	if err != nil {
 		return videos, err
 	}
+	videoProcess(videos)
 	return videos, nil
 }
 

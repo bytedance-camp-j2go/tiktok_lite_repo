@@ -53,3 +53,11 @@ func CommentList(videoId int64) ([]model.Comment, error) {
 	err := global.DB.Where("video_id = ?", videoId).Find(&commentList).Error
 	return commentList, err
 }
+
+func CommentCnt(videoId int64) (res int64) {
+	err := global.DB.Model(&model.Comment{}).Where("video_id = ?", videoId).Count(&res).Error
+	if err != nil {
+		zap.L().Debug("get comment cnt error!", zap.Int64("vid", videoId), zap.Error(err))
+	}
+	return
+}

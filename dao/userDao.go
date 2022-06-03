@@ -14,12 +14,7 @@ import (
 )*/
 
 // UserInfoById 根据userId获取用户信息
-// TODO 缓存 UserInfo
 func UserInfoById(userId int64) (model.User, error) {
-	// util.Save2Redis(
-	// 	fmt.Sprintf(userCacheKey, userId),
-	// )
-
 	db := global.DB
 	user := model.User{}
 	err := db.Where("id = ?", userId).Find(&user).Error
