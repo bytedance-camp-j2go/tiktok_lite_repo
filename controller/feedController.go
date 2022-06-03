@@ -54,11 +54,11 @@ func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 	}
 
 	videos := VideoFeed(videoIdList, user.Id)
-
+	nextTime := calNextTime(videos)
 	ctx.JSON(http.StatusOK, response.FeedResponse{
 		StatusCode: 0,
 		VideoList:  videos,
-		NextTime:   calNextTime(videos),
+		NextTime:   nextTime,
 	})
 
 }
@@ -108,5 +108,5 @@ func ParsingTimestampStr(timeStr string) time.Time {
 	if err != nil {
 		return time.Now()
 	}
-	return time.Unix(timestamp, 0)
+	return time.UnixMilli(timestamp)
 }

@@ -1,8 +1,12 @@
 package response
 
 import (
+	"github.com/fanjindong/go-cache"
+	"go.uber.org/zap"
 	"tiktok-lite/dao"
 	"tiktok-lite/model"
+	"tiktok-lite/util"
+	"time"
 )
 
 // User 返回用户信息中的User对象
@@ -40,21 +44,48 @@ const (
 	backGroundAPI = "https://picsum.photos/400/200?grayscale"
 )
 
+// https://github.com/fanjindong/go-cache/blob/master/README_ZH.md
+var userCache = cache.NewMemCache(
+	cache.WithShards(128),                  // 定义分片锁的粒度
+	cache.WithClearInterval(3*time.Minute), // 缓存清理间隔
+)
+
 // NewUser 查询 User 并计算是否已关注
 // uid = 被查询用户 id, u2id = 查询发起者 id
-// TODO 写入缓存，逻辑：NewUser 用于除了 User Info 意外的 User 数据供给，很可能重复
+// TODO 写入缓存，逻辑：NewUser 用于除了 UserInfo 以外的 User 供给，一个请求很可能重复调用非常多次
 func NewUser(uid, u2id int64) (User, error) {
-	if id, err := dao.UserInfoById(uid); err == nil {
-		return User{
-			id,
-			isFollow(uid, u2id),
-			avatarAPI,
-			"测试签名",
-			backGroundAPI,
-		}, err
+	var (
+		user model.User
+		err  error
+	)
+
+	userCacheKey := util.Int64D2String(uid)
+	// 尝试使用本地缓存，失败走下面的获取
+	if userCache.Exists(userCacheKey) {
+		cacheUser, ok := userCache.Get(userCacheKey)
+		if ok {
+			user = cacheUser.(model.User)
+			// zap.L().Debug("get cache success!", zap.String("name", user.Name))
+			goto FINISH
+		}
+		zap.L().Debug("get user cache error! " + userCacheKey)
 	}
 
-	return UserError, nil
+	if user, err = dao.UserInfoById(uid); err != nil {
+		return UserError, err
+	} else {
+		// 十秒过期
+		userCache.Set(userCacheKey, user, cache.WithEx(10*time.Second))
+	}
+
+FINISH:
+	return User{
+		user,
+		isFollow(uid, u2id),
+		avatarAPI,
+		"测试签名",
+		backGroundAPI,
+	}, err
 }
 
 func isFollow(uid, u2id int64) bool {

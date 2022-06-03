@@ -1,6 +1,7 @@
 package response
 
 import (
+	"fmt"
 	"tiktok-lite/model"
 )
 
@@ -15,4 +16,9 @@ type Video struct {
 	model.Video
 	Author     User `json:"author,omitempty"`
 	IsFavorite bool `json:"is_favorite"`
+}
+
+func (v Video) String() string {
+	return fmt.Sprintf("viode {name: %v,ptime: %q,}\n", v.Title, v.CreatedAt.Format("2006-1-2 15:04:05.0000"))
+
 }

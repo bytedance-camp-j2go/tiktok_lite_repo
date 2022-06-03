@@ -13,12 +13,20 @@ func VideoQueryList(videoId []int64) ([]model.Video, error) {
 		return nil, err
 	}
 
-	// video process 一些数据字段存在缓存中的，将其取出
-	for idx := range res {
-		res[idx].FavoriteCount = GetFavoriteCountByVideoId(res[idx].VideoId)
-	}
-
+	// for idx := range res {
+	// 	res[idx].FavoriteCount = GetFavoriteCountByVideoId(res[idx].VideoId)
+	// }
+	videoProcess(res)
 	return res, nil
+}
+
+// video process 一些数据字段存在缓存、其他表中的，将其取出
+func videoProcess(videos []model.Video) {
+	for idx := range videos {
+		videos[idx].FavoriteCount = GetFavoriteCountByVideoId(videos[idx].VideoId)
+		videos[idx].CommentCount = CommentCnt(videos[idx].VideoId)
+
+	}
 }
 
 // video favoriteCnt

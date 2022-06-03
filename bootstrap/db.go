@@ -7,6 +7,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"tiktok-lite/global"
+	"time"
+
 	// "gorm.io/gorm"
 	"moul.io/zapgorm2"
 )
@@ -31,11 +33,14 @@ func InitDB() *gorm.DB {
 	logger := zapgorm2.New(zap.L())
 	logger.SetAsDefault()
 
+	logger.SlowThreshold = time.Second
+
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true, // 在查询中，可以使查询的表名为单数
 		},
 		Logger: logger,
+		// SlowThreshold
 	})
 	if err != nil {
 		panic(err)
