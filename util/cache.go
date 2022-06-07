@@ -75,9 +75,10 @@ func ZRM2Redis(key string, ms ...any) int64 {
 	return cnt
 }
 
-// ZSetRangeByScoreStrings 范围查找值
-func ZSetRangeByScoreStrings(key string, z *redis.ZRangeBy) ([]string, error) {
-	return redisClient.ZRangeByScore(redisDefCtx, key, z).Result()
+// ZSetRevRangeByScoreStrings 范围查找值
+func ZSetRevRangeByScoreStrings(key string, z *redis.ZRangeBy) ([]string, error) {
+	// return redisClient.ZRangeByScore(redisDefCtx, key, z).Result()
+	return redisClient.ZRevRangeByScore(redisDefCtx, key, z).Result()
 }
 
 // ZSetRangeByScoreInt
@@ -120,7 +121,7 @@ func ZSetRangeByScoreStrings(key string, z *redis.ZRangeBy) ([]string, error) {
 
 // ZSetRangeByScoreInt 执行范围查询 如果 []int64 为空, 则 error 不可忽略
 func ZSetRangeByScoreInt(key string, z *redis.ZRangeBy) ([]int64, error) {
-	strings, err := ZSetRangeByScoreStrings(key, z)
+	strings, err := ZSetRevRangeByScoreStrings(key, z)
 	if err != nil {
 		return nil, err
 	}

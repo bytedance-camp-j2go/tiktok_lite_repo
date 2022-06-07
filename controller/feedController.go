@@ -38,15 +38,15 @@ func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 	// 需要计算 start 在 set 中的排名, 决定使用二分查找
 	// 找到比 start 大的第一个元素的排名, 然后返回 start + offset 个视频信息
 	max := strconv.FormatInt(start.UnixMilli(), 10)
+
 	rangeBy := &redis.ZRangeBy{
-		Min:    "-inf",
 		Max:    max,
+		Min:    "-inf",
 		Offset: 0,
 		Count:  videoCnt,
 	}
 
 	videoIdList, err := util.ZSetRangeByScoreInt(global.VideoSeqSetKey, rangeBy)
-
 	if len(videoIdList) == 0 && err != nil {
 		zap.L().Debug("get video list err!!", zap.Int("len", len(videoIdList)), zap.Error(err))
 		ctx.JSON(http.StatusInternalServerError, response.Response{StatusCode: 1, StatusMsg: err.Error()})
@@ -54,6 +54,11 @@ func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 	}
 
 	videos := VideoFeed(videoIdList, user.Id)
+
+	// 倒序
+	for n, idx := len(videos), 0; idx < n>>1; idx++ {
+		videos[idx], videos[n-1-idx] = videos[n-1-idx], videos[idx]
+	}
 	nextTime := calNextTime(videos)
 	ctx.JSON(http.StatusOK, response.FeedResponse{
 		StatusCode: 0,
