@@ -24,8 +24,8 @@ func CommentQuery(id int64) (*model.Comment, error) {
 func CommentQueryUserId(id int64) (int64, error) {
 	var res int64
 	err := global.DB.
-		Table("comment").
-		Select("user_id").
+		Model(&model.Comment{}).
+		Select("usr_id").
 		Where("id = ?", id).
 		First(&res).Error
 	return res, err
