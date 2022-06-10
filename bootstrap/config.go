@@ -28,7 +28,6 @@ func InitConfig() {
 	v.SetConfigName(configName)
 	v.AddConfigPath(defaultPath)
 	v.SetConfigType(configType)
-
 	if err := v.ReadInConfig(); err != nil {
 		panic("read config >> " + err.Error())
 	}

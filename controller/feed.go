@@ -68,34 +68,6 @@ func feedProcess(ctx *gin.Context, start time.Time, user model.User) {
 
 }
 
-// // VideoFeed 获取 video 信息并封装用户信息，封装
-// func VideoFeed(videoIds []int64, uid int64) []response.Video {
-// 	videos, err := dao.VideoQueryList(videoIds)
-// 	if err != nil {
-// 		zap.L().Error("获取视频信息失败!!", zap.Error(err))
-// 		return nil
-// 	}
-//
-// 	res := make([]response.Video, 0, len(videos))
-//
-// 	// 不在 for 循环内声明变量
-// 	var author response.User
-// 	for _, video := range videos {
-// 		author, err = response.NewUser(video.UserId, uid)
-// 		if err != nil {
-// 			zap.L().Error("get UserInfo", zap.Error(err))
-// 			res = append(res, response.Video{Video: video})
-// 			continue
-// 		}
-// 		res = append(res, response.Video{Video: video, Author: author})
-// 	}
-// 	return res
-// }
-
-// func videoProcess() {
-//
-// }
-
 //  ====================== 时间解析 ======================
 
 func calNextTime(videos []response.Video) int64 {

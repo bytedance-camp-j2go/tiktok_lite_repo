@@ -12,10 +12,6 @@ func VideoQueryList(videoId []int64) ([]model.Video, error) {
 	if err := global.DB.Where("video_id IN ?", videoId).Find(&res).Error; err != nil {
 		return nil, err
 	}
-
-	// for idx := range res {
-	// 	res[idx].FavoriteCount = GetFavoriteCountByVideoId(res[idx].VideoId)
-	// }
 	videoProcess(res)
 	return res, nil
 }
@@ -28,7 +24,3 @@ func videoProcess(videos []model.Video) {
 
 	}
 }
-
-// video favoriteCnt
-
-// video commentCnt

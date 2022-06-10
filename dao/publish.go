@@ -51,15 +51,3 @@ func PublishIdList(userId int64) ([]int64, error) {
 	}
 	return videosId, nil
 }
-
-// // UserFavorite 用户点赞的视频列表
-// func UserFavorite(userId int64) ([]int64, error) {
-// 	db := global.DB
-// 	var videosId []int64
-// 	err := db.Table("user_favorite").Select("video_id").Where("user_id=?", userId).Find(&videosId).Error
-// 	if err != nil {
-// 		return videosId, err
-// 	}
-// 	return videosId, nil
-//
-// }

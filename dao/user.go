@@ -8,11 +8,6 @@ import (
 	"tiktok-lite/util"
 )
 
-/*const (
-	defRedisUserInfoCahceExpires = time.Second
-	userCacheKey                 = "user:info:c:%d"
-)*/
-
 // UserInfoById 根据userId获取用户信息
 func UserInfoById(userId int64) (model.User, error) {
 	db := global.DB

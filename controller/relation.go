@@ -11,9 +11,7 @@ import (
 	"tiktok-lite/util"
 )
 
-/**
-关注操作
-*/
+// RelationAction 关注
 func RelationAction(c *gin.Context) {
 
 	// 获取用户信息

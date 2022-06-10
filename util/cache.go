@@ -55,14 +55,6 @@ func ZAdd2Redis(key string, score float64, v any) {
 	)
 }
 
-// func ZSCard(key string) int64 {
-// 	result, err := redisClient.SCard(redisDefCtx, key).Result()
-// 	if err != nil {
-// 		zap.L().Error("redis error!!", zap.String("Key", key), zap.Error(err))
-// 	}
-// 	return result
-// }
-
 func ZRM2Redis(key string, ms ...any) int64 {
 	cnt, err := redisClient.ZRem(
 		redisDefCtx,

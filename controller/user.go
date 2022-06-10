@@ -62,9 +62,6 @@ func UserInfo(context *gin.Context) {
 
 // UserRegister 用户注册
 func UserRegister(context *gin.Context) {
-	// 获取账号密码
-	// username := context.PostForm("username")
-	// password := context.PostForm("password")
 	username := context.Query("username")
 	password := context.Query("password")
 	// 插入数据
@@ -81,9 +78,6 @@ func UserRegister(context *gin.Context) {
 
 // UserLogin 用户登录
 func UserLogin(context *gin.Context) {
-	// 获取账号密码
-	// username := context.PostForm("username")
-	// password := context.PostForm("password")
 	username := context.Query("username")
 	password := context.Query("password")
 
@@ -101,11 +95,6 @@ func UserLogin(context *gin.Context) {
 		token, _ := util.GetToken(user)
 
 		context.JSON(http.StatusOK, response.UserTokenSuccess(user.Id, token, "登陆成功"))
-		/*context.JSON(http.StatusOK, response.UserTokenResponse{
-			Response: response.Response{StatusCode: 0, StatusMsg: "登录成功"},
-			UserId:   user.Id,
-			Token:    token,
-		})*/
 		return
 	}
 	context.JSON(http.StatusBadRequest, response.BaseInputError("账号或密码错误"))

@@ -52,7 +52,6 @@ var userCache = cache.NewMemCache(
 
 // NewUser 查询 User 并计算是否已关注
 // uid = 被查询用户 id, u2id = 查询发起者 id
-// TODO 写入缓存，逻辑：NewUser 用于除了 UserInfo 以外的 User 供给，一个请求很可能重复调用非常多次
 func NewUser(uid, u2id int64) (User, error) {
 	var (
 		user model.User

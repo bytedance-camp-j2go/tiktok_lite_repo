@@ -6,10 +6,6 @@ import (
 	"tiktok-lite/model"
 )
 
-// var (
-// 	BadComment = &model.Comment{}
-// )
-
 // CommentQuery 读单条记录，如果是
 func CommentQuery(id int64) (*model.Comment, error) {
 	res := model.Comment{}

@@ -27,15 +27,6 @@ const (
 // 3 上传索引保存失败, 上传操作无效
 func PublishAction(context *gin.Context) {
 	// 从上下文获取用户信息
-	// ctxVal, _ := context.Get(global.CtxUserKey)
-	//
-	// user, ok := ctxVal.(model.User)
-	// if !ok {
-	// 	zap.L().Error("user info err!")
-	// 	context.JSON(http.StatusBadRequest, response.Response{StatusCode: 2, StatusMsg: ""})
-	// 	return
-	// }
-
 	u := CtxUser(context)
 	if u == DefUser {
 		zap.L().Error("user info err!")
