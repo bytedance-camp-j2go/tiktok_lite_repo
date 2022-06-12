@@ -40,8 +40,8 @@ type User struct {
 }
 
 const (
-	avatarAPI     = "https://api.sunweihu.com/api/sjtx/api.php"
-	backGroundAPI = "https://picsum.photos/400/200?grayscale"
+	AvatarAPI     = "https://api.sunweihu.com/api/sjtx/api.php"
+	BackGroundAPI = "https://picsum.photos/400/200?grayscale"
 )
 
 // https://github.com/fanjindong/go-cache/blob/master/README_ZH.md
@@ -81,9 +81,9 @@ FINISH:
 	return User{
 		user,
 		isFollow(uid, u2id),
-		avatarAPI,
+		AvatarAPI,
 		"测试签名",
-		backGroundAPI,
+		BackGroundAPI,
 	}, err
 }
 

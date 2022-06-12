@@ -51,8 +51,10 @@ func UserInfo(context *gin.Context) {
 
 	// 封装用户信息
 	userResp := response.User{
-		User:     *u,
-		IsFollow: true, // 由于这里是用户在主页看到自己信息，所以是默认关注自己的
+		User:            *u,
+		IsFollow:        true, // 由于这里是用户在主页看到自己信息，所以是默认关注自己的
+		Avatar:          response.AvatarAPI,
+		BackgroundImage: response.BackGroundAPI,
 	}
 	context.JSON(http.StatusOK, response.UserResponse{
 		Response: response.Response{StatusCode: 0, StatusMsg: "成功"},
